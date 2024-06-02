@@ -89,11 +89,9 @@ public class HideAndSeekManager : MonoBehaviour
         if (null == m_instance)
         {
             m_instance = this;
-            Screen.orientation = ScreenOrientation.LandscapeRight;
             m_player = GameObject.FindGameObjectWithTag("Player");
 
             m_itemCreate   = Random.Range(m_itemCreateMin, m_itemCreateMax);
-
             m_gametxtImage     = m_gametxt.GetComponent<Image>();
             m_gametxtTransform = m_gametxt.GetComponent<RectTransform>();
             m_initialScale     = m_gametxtTransform.localScale;
@@ -213,7 +211,7 @@ public class HideAndSeekManager : MonoBehaviour
         {
             if(m_goalFlag == null)
             {
-                m_goalFlag = Instantiate(Resources.Load<GameObject>("Prefab/HideAndSeek/Object/GoalFlag"));
+                m_goalFlag = Instantiate(Resources.Load<GameObject>("Prefabs/MiniGame/Seclusion_Game/Object/GoalFlag"));
                 m_goalFlag.GetComponent<Transform>().position = new Vector3(13.3f, -3.2f, 0f);
             }
         }
@@ -248,9 +246,9 @@ public class HideAndSeekManager : MonoBehaviour
         m_gameFinish = true;
 
         if (str == "CLEAR")
-            m_gametxtImage.sprite = Resources.Load<Sprite>("Graphic/Seclusion Game/UI/FontUI/Clear");
+            m_gametxtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Clear");
         else if(str == "FAIL")
-            m_gametxtImage.sprite = Resources.Load<Sprite>("Graphic/Seclusion Game/UI/FontUI/Fail");
+            m_gametxtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Fail");
         m_gametxtTransform.localScale = m_initialScale;// * 0.1f;
     }
 
@@ -301,13 +299,13 @@ public class HideAndSeekManager : MonoBehaviour
             switch (m_beforItemIndex)
             {
                 case 0:
-                    item = Instantiate(Resources.Load<GameObject>("Prefab/HideAndSeek/Object/Puddle"));
+                    item = Instantiate(Resources.Load<GameObject>("Prefabs/MiniGame/Seclusion_Game/Object/Puddle"));
                     break;
                 case 1:
-                    item = Instantiate(Resources.Load<GameObject>("Prefab/HideAndSeek/Object/Bottle"));
+                    item = Instantiate(Resources.Load<GameObject>("Prefabs/MiniGame/Seclusion_Game/Object/Bottle"));
                     break;
                 case 2:
-                    item = Instantiate(Resources.Load<GameObject>("Prefab/HideAndSeek/Object/Sign"));
+                    item = Instantiate(Resources.Load<GameObject>("Prefabs/MiniGame/Seclusion_Game/Object/Sign"));
                     break;
             }
             item.GetComponent<Transform>().position = new Vector3(15f, -3.5f, 0f);

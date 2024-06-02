@@ -51,7 +51,7 @@ public class HideAndSeekSign : MonoBehaviour
         // UI 아이콘 생성
         if(m_timer == null)
         {
-            m_timer = Instantiate(Resources.Load<GameObject>("Prefab/HideAndSeek/UI/Timer"), GameObject.Find("Canvas").transform.GetChild(0).transform);
+            m_timer = Instantiate(Resources.Load<GameObject>("Prefabs/MiniGame/Seclusion_Game/UI/Timer"), GameObject.Find("Canvas").transform.GetChild(0).transform);
             m_timer.GetComponent<HideAndSeekTimer>().Owner = gameObject;
         }
 

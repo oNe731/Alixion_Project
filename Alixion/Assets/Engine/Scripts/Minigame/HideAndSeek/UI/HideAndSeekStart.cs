@@ -34,7 +34,7 @@ public class HideAndSeekStart : MonoBehaviour
             {
                 m_start = true;
                 transform.GetChild(0).gameObject.SetActive(true);
-                m_txtImage.sprite = Resources.Load<Sprite>("Graphic/Seclusion Game/UI/FontUI/Ready");
+                m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Ready");
                 m_txtTransform.localScale = m_initialScale * 0.1f;
             }
         }
@@ -50,7 +50,7 @@ public class HideAndSeekStart : MonoBehaviour
                     if (m_wait > 0.2f)
                     {
                         m_wait = 0f;
-                        m_txtImage.sprite = Resources.Load<Sprite>("Graphic/Seclusion Game/UI/FontUI/Start");
+                        m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Start");
                         m_txtTransform.localScale = m_initialScale * 0.1f;
                     }
                 }

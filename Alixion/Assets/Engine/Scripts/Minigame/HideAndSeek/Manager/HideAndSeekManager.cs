@@ -32,9 +32,7 @@ public class HideAndSeekManager : MonoBehaviour
     private bool m_gameStop = false;
     private bool m_monitor  = false;
     private bool m_pause    = false;
-    private bool m_gameFinish = false;
     private float m_timer = 60f;
-    private float m_wait  = 0f;
     private float m_speed = 1f;
 
     private bool  m_reversal = false;
@@ -44,10 +42,7 @@ public class HideAndSeekManager : MonoBehaviour
     private float m_itemCreate = 0;
     private float m_itemCreateMin = 5;
     private float m_itemCreateMax = 10;
-
-    private float m_maxScale = 4f;
-    private Vector3 m_initialScale;
-    private int m_beforItemIndex = -1;
+    private int   m_beforItemIndex = -1;
 
     private GameObject m_goalFlag = null;
 
@@ -88,13 +83,14 @@ public class HideAndSeekManager : MonoBehaviour
     {
         if (null == m_instance)
         {
+            Screen.orientation = ScreenOrientation.LandscapeRight;
+
             m_instance = this;
             m_player = GameObject.FindGameObjectWithTag("Player");
 
             m_itemCreate   = Random.Range(m_itemCreateMin, m_itemCreateMax);
             m_gametxtImage     = m_gametxt.GetComponent<Image>();
             m_gametxtTransform = m_gametxt.GetComponent<RectTransform>();
-            m_initialScale     = m_gametxtTransform.localScale;
         }
         else
             Destroy(this.gameObject);
@@ -145,23 +141,6 @@ public class HideAndSeekManager : MonoBehaviour
                         }
                     }
                 }
-            }
-            else if (m_gameFinish)
-            {
-                //m_gametxtTransform.localScale += Vector3.one * 0.08f;
-                //if (m_gametxtTransform.localScale.x > m_maxScale)
-                //{
-                //    m_gametxtTransform.localScale = Vector3.one * m_maxScale;
-
-                //    m_wait += Time.deltaTime;
-                //    if (m_wait > 0.2f)
-                //    {
-                //        m_wait = 0f;
-
-                //        m_retryButton.SetActive(true);
-                //        m_homeButton.SetActive(true);
-                //    }
-                //}
             }
         }
     }
@@ -227,7 +206,6 @@ public class HideAndSeekManager : MonoBehaviour
         if (m_barSlider.value == m_barSlider.maxValue)
         {
             Finish_Game("CLEAR");
-            Clear_Game();
         }
         else
         {
@@ -243,18 +221,58 @@ public class HideAndSeekManager : MonoBehaviour
         m_gametxt.SetActive(true);
         m_player.GetComponent<Animator>().StartPlayback();
 
-        m_gameFinish = true;
-
         if (str == "CLEAR")
+        {
             m_gametxtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Clear");
+            Clear_Game();
+        }
         else if(str == "FAIL")
             m_gametxtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Fail");
-        m_gametxtTransform.localScale = m_initialScale;// * 0.1f;
     }
 
     private void Clear_Game()
     {
-        // 남은 타이머에 따라 별 개수 차등 분배
+        if (m_timer >= 10f) // 별 3개
+        {
+            m_darkPanel.transform.GetChild(1).gameObject.SetActive(true);
+            m_darkPanel.transform.GetChild(2).gameObject.SetActive(true);
+            m_darkPanel.transform.GetChild(3).gameObject.SetActive(true);
+
+            // 아이템 3개 생성 및 인벤토리에 추가
+
+            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion1"), GameObject.Find("Canvas").transform.GetChild(0));
+            UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
+            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
+
+            GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion2"), GameObject.Find("Canvas").transform.GetChild(0));
+            UIitem2.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.2f, -30.2f);
+            GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>().objectName);
+
+            GameObject UIitem3 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion3"), GameObject.Find("Canvas").transform.GetChild(0));
+            UIitem3.GetComponent<RectTransform>().anchoredPosition = new Vector2(104f, -31.1f);
+            GameManager.Instance.Inventory.Add_Item(UIitem3.GetComponent<ItemData>().objectName);
+        }
+        else if (m_timer >= 5f) // 별 2개
+        {
+            m_darkPanel.transform.GetChild(1).gameObject.SetActive(true);
+            m_darkPanel.transform.GetChild(2).gameObject.SetActive(true);
+
+            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion1"), GameObject.Find("Canvas").transform.GetChild(0));
+            UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
+            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
+
+            GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion2"), GameObject.Find("Canvas").transform.GetChild(0));
+            UIitem2.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.2f, -30.2f);
+            GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>().objectName);
+        }
+        else // 별 1개
+        {
+            m_darkPanel.transform.GetChild(1).gameObject.SetActive(true);
+
+            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion1"), GameObject.Find("Canvas").transform.GetChild(0));
+            UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
+            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
+        }
     }
 
     public void Update_Heart(int heartCount)
@@ -274,7 +292,8 @@ public class HideAndSeekManager : MonoBehaviour
 
     public void Button_Home()
     {
-        // SceneManager.LoadScene("Home");
+        Screen.orientation = ScreenOrientation.Portrait;
+        SceneManager.LoadScene("MainGame");
     }
 
     private void Crate_Item()

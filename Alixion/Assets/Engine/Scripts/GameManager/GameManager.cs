@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 우선 순위 : 파멸 > 선 > 사기 > 은둔 > 광기 
+public enum PROPERTYTYPE { PT_RUIN, PT_ZEN, PT_FRAUD, PT_SECLUSION, PT_MADNESS, PT_END };
+
 public class GameManager : MonoBehaviour
 {
     private static GameManager m_instance = null;
@@ -12,11 +15,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_encyclopediaPanel;
     [SerializeField] private GameObject m_settingPanel;
 
-    private int m_ruinPoints  = 0;
-    private int m_zenPoints   = 0;
-    private int m_fraudPoints = 0;
-    private int m_seclusionPoints = 0;
-    private int m_madnessPoints   = 0;
+    private int[] m_alienPoint;
+    private Inventory m_inventory;
+
+    public GameObject InventoryPanel => m_inventoryPanel;
+    public Inventory Inventory => m_inventory;
 
     private void Awake()
     {
@@ -24,6 +27,9 @@ public class GameManager : MonoBehaviour
         {
             m_instance = this;
             DontDestroyOnLoad(this.gameObject);
+
+            m_alienPoint = new int[(int)PROPERTYTYPE.PT_END];
+            m_inventory = GetComponent<Inventory>();
         }
         else
         {
@@ -32,36 +38,25 @@ public class GameManager : MonoBehaviour
     }
 
     #region EVOLUTION
-    public void Add_RuinPoint(int points)
-    {
-        m_ruinPoints += points;
-        UpdateStatusObject();
-    }
+    // 게임 시작 후 간단한 배경 스토리와 게임의 목적이 주어진다.
+    // 선택) 이름 짓고 게임 시작
+    // 미니게임을 통해 아이템을 얻는다. (잘할 시 더 좋은 보상 지급)
 
-    public void Add_ZenPoint(int points)
+    public void Update_Alien()
     {
-        m_zenPoints += points;
-        UpdateStatusObject();
-    }
+        // 보상을 인벤토리에서 선택해서 먹인다.
+        // 일정 수치마다 성장한다.
+        // 성장이 끝나면 엔딩과 엔드카드가 나오고 도감에 추가된다.
 
-    public void Add_FraudPoint(int points)
-    {
-        m_fraudPoints += points;
-        UpdateStatusObject();
-    }
 
-    public void Add_SeclusionPoint(int points)
-    {
-        m_seclusionPoints += points;
-        UpdateStatusObject();
-    }
+        // 일정 수치를 넘었다면 겉모습 변화된다. 0 ~ 14 / 15 ~ 29
+        // 30 ~ 44를 넘었다면 최종 성장 완료 및 도감 추가
+        // 우선 순위 : 파멸 > 선 > 사기 > 은둔 > 광기 
 
-    public void Add_MadnessPoint(int points)
-    {
-        m_madnessPoints += points;
-        UpdateStatusObject();
-    }
 
+        // 1가지의 타입 포인트만 존재하는지 검사
+        // 1가지의 타입만 존재하면
+    }
 
     public void UpdateStatusObject()
     {

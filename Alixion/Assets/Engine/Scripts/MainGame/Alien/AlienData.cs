@@ -13,7 +13,7 @@ public enum ALIENTYPE // 15°³
     AT_FRAUD_SECLUSION, AT_FRAUD_MADNESS,
     AT_SECLUSION_MADNESS,
 
-    PT_END 
+    AT_END
 };
 public class AlienData
 {

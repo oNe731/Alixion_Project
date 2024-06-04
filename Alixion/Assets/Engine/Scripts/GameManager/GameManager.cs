@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // 우선 순위 : 파멸 > 선 > 사기 > 은둔 > 광기 
 public enum PROPERTYTYPE { PT_RUIN, PT_ZEN, PT_FRAUD, PT_SECLUSION, PT_MADNESS, PT_END };
+public enum IMAGETYPE { IT_SPRITE, IT_IMAGE, IT_END };
 
 public class GameManager : MonoBehaviour
 {
@@ -12,17 +14,21 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject m_profilePanel;
     [SerializeField] private GameObject m_inventoryPanel;
+    [SerializeField] private GameObject m_inventoryPopupPanel;
     [SerializeField] private GameObject m_encyclopediaPanel;
     [SerializeField] private GameObject m_settingPanel;
 
     private ALIENTYPE m_currentAlienType = ALIENTYPE.AT_BASIC;
     private int m_currentLevel = 0;
 
+    private int m_sumPoint = 0;
     private int[] m_alienPoint;
     private Inventory m_inventory;
     private List<AlienData> alienDatas;
 
     public ALIENTYPE CurrentAlienType => m_currentAlienType;
+    public int CurrentLevel => m_currentLevel;
+    public int SumPoint => m_sumPoint;
     public GameObject InventoryPanel => m_inventoryPanel;
     public Inventory Inventory => m_inventory;
 
@@ -85,22 +91,26 @@ public class GameManager : MonoBehaviour
     #region EVOLUTION
     public void Add_Point(PROPERTYTYPE type, int pointValue)
     {
+        Close_InventoryPopup();
+
         m_alienPoint[(int)type] += pointValue;
         Update_Alien();
     }
 
     public void Update_Alien()
     {
+        if (m_currentLevel == 3) return;
+
         // 일정 수치마다 외관 변화
         bool update = false;
 
-        int sumPoint = 0;
+        m_sumPoint = 0;
         for (int i = 0; i < m_alienPoint.Length; ++i)
-            sumPoint += m_alienPoint[i];
+            m_sumPoint += m_alienPoint[i];
 
-        if (sumPoint >= 45)       { m_currentLevel = 3; update = true; } // 3단계
-        else if(sumPoint >= 30)   { m_currentLevel = 2; update = true; } // 2단계
-        else if (sumPoint >= 15)  { m_currentLevel = 1; update = true; } // 1단계
+        if (m_sumPoint >= 45)       { m_currentLevel = 3; update = true; } // 3단계
+        else if(m_sumPoint >= 30)   { m_currentLevel = 2; update = true; } // 2단계
+        else if (m_sumPoint >= 15)  { m_currentLevel = 1; update = true; } // 1단계
 
         if (update == false)
             return;
@@ -193,39 +203,24 @@ public class GameManager : MonoBehaviour
     {
         m_currentAlienType = alienData.Type;
 
-        // 메인화면 외계인 && 인벤토리 외계인 교체 / 기타 사항은 직접 타입 받아가서 교체
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
-        {
-            if (player.GetComponent<SpriteRenderer>() != null)
-            {   // 스프라이트용 애니메이터 교체
-                player.GetComponent<Animator>().runtimeAnimatorController = Get_AlionAnimator(0);
-            }
-            else
-            {
-                // 이미지용 애니메이터 교체
-                // player.GetComponent<Animator>().runtimeAnimatorController = Get_AlionAnimator(1);
-            }
-        }
-
         if (m_currentLevel == 3)
         {
             // 성장이 끝나면 엔딩과 엔드카드가 나오고 도감에 추가
         }
     }
 
-    public RuntimeAnimatorController Get_AlionAnimator(int type = 0) // 0 스프라이트, 1 이미지
+    public RuntimeAnimatorController Get_AlionAnimator(IMAGETYPE type)
     {
         RuntimeAnimatorController animator = null;
         int level = Mathf.Max(m_currentLevel - 1, 0);
 
-        if (type == 0)
+        if (type == IMAGETYPE.IT_SPRITE)
         {
             animator = Resources.Load<RuntimeAnimatorController>("Animation/Alien/SpriteType/" + alienDatas[(int)CurrentAlienType].AnimatrNames[level]);
         }
-        else if(type == 1)
+        else if(type == IMAGETYPE.IT_IMAGE)
         {
-            //animator = Resources.Load<RuntimeAnimatorController>("Animation/Alien/ImageType/" + alienDatas[(int)CurrentAlienType].AnimatrNames[level]);
+            animator = Resources.Load<RuntimeAnimatorController>("Animation/Alien/ImageType/" + alienDatas[(int)CurrentAlienType].AnimatrNames[level]);
         }
 
         return animator;
@@ -263,6 +258,22 @@ public class GameManager : MonoBehaviour
             return;
 
         m_inventoryPanel.SetActive(false);
+    }
+
+    public void Open_InventoryPopup()
+    {
+        if (m_inventoryPopupPanel == null || Inventory == null || Inventory.Use_ItemBool() == false)
+            return;
+
+        m_inventoryPopupPanel.SetActive(true);
+    }
+
+    public void Close_InventoryPopup()
+    {
+        if (m_inventoryPopupPanel == null)
+            return;
+
+        m_inventoryPopupPanel.SetActive(false);
     }
 
     public void Open_Encyclopedia()

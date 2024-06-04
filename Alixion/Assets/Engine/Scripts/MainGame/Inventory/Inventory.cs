@@ -73,14 +73,23 @@ public class Inventory : MonoBehaviour
         m_selectIcon.GetComponent<InvenSlotSelect>().Start_Coroutine();
     }
 
-    public void Use_Item()
+    public bool Use_ItemBool()
     {
         if (m_selctSlot == null || m_selctSlot.EMPTY == true || GameManager.Instance == null)
+            return false;
+
+        return true;
+    }
+    public void Use_Item()
+    {
+        if (Use_ItemBool() == false)
             return;
 
         GameManager.Instance.Add_Point(m_selctSlot.Item.propertyType, m_selctSlot.Item.point);
         m_selctSlot.Reset_Slot();
         Sort_Inventory();
+
+        Destroy(m_selectIcon);
     }
 
     private void Sort_Inventory()

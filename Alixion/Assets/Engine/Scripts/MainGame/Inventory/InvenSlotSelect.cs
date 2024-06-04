@@ -14,6 +14,11 @@ public class InvenSlotSelect : MonoBehaviour
         m_selctImage = GetComponent<Image>();
     }
 
+    private void OnDisable()
+    {
+        Destroy(gameObject);
+    }
+
     public void Start_Coroutine()
     {
         if (m_coroutine != null)

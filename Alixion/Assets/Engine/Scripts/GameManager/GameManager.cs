@@ -15,9 +15,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_encyclopediaPanel;
     [SerializeField] private GameObject m_settingPanel;
 
+    private ALIENTYPE m_currentAlienType = ALIENTYPE.AT_BASIC;
+    private int m_currentLevel = 0;
+
     private int[] m_alienPoint;
     private Inventory m_inventory;
+    private List<AlienData> alienDatas;
 
+    public ALIENTYPE CurrentAlienType => m_currentAlienType;
     public GameObject InventoryPanel => m_inventoryPanel;
     public Inventory Inventory => m_inventory;
 
@@ -29,7 +34,47 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
 
             m_alienPoint = new int[(int)PROPERTYTYPE.PT_END];
+            for (int i = 0; i < m_alienPoint.Length; ++i)
+                m_alienPoint[i] = 0;
             m_inventory = GetComponent<Inventory>();
+
+            alienDatas = new List<AlienData>();
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_BASIC, "UnMixedType/Basic/AC_Basic", "UnMixedType/Basic/AC_Basic", "UnMixedType/Basic/AC_Basic"));
+
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_RUIN, 
+                "UnMixedType/Ruin/AC_Ruin1", "UnMixedType/Ruin/AC_Ruin2", "UnMixedType/Ruin/AC_Ruin3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_ZEN, 
+                "UnMixedType/Zen/AC_Zen1", "UnMixedType/Zen/AC_Zen2", "UnMixedType/Zen/AC_Zen3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_FRAUD, 
+                "UnMixedType/Fraud/AC_Fraud1", "UnMixedType/Fraud/AC_Fraud2", "UnMixedType/Fraud/AC_Fraud3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_SECLUSION, 
+                "UnMixedType/Seclusion/AC_Seclusion1", "UnMixedType/Seclusion/AC_Seclusion2", "UnMixedType/Seclusion/AC_Seclusion3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_MADNESS, 
+                "UnMixedType/Madness/AC_Madness1", "UnMixedType/Madness/AC_Madness2", "UnMixedType/Madness/AC_Madness3"));
+
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_ZEN_RUIN, 
+                "MixedType/Zen+Ruin/AC_Zen_Ruin1", "MixedType/Zen+Ruin/AC_Zen_Ruin2", "MixedType/Zen+Ruin/AC_Zen_Ruin3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_ZEN_FRAUD, 
+                "MixedType/Zen+Fraud/AC_Zen_Fraud1", "MixedType/Zen+Fraud/AC_Zen_Fraud2", "MixedType/Zen+Fraud/AC_Zen_Fraud3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_ZEN_SECLUSION, 
+                "MixedType/Zen+Seclusion/AC_Zen_Seclusion1", "MixedType/Zen+Seclusion/AC_Zen_Seclusion2", "MixedType/Zen+Seclusion/AC_Zen_Seclusion3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_ZEN_MADNESS, 
+                "MixedType/Zen+Madness/AC_Zen_Madness1", "MixedType/Zen+Madness/AC_Zen_Madness2", "MixedType/Zen+Madness/AC_Zen_Madness3"));
+
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_RUIN_FRAUD, 
+                "MixedType/Ruin+Fraud/AC_Ruin_Fraud1", "MixedType/Ruin+Fraud/AC_Ruin_Fraud2", "MixedType/Ruin+Fraud/AC_Ruin_Fraud3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_RUIN_SECLUSION, 
+                "MixedType/Ruin+Seclusion/AC_Ruin_Seclusion1", "MixedType/Ruin+Seclusion/AC_Ruin_Seclusion2", "MixedType/Ruin+Seclusion/AC_Ruin_Seclusion3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_RUIN_MADNESS, 
+                "MixedType/Ruin+Madness/AC_Ruin_Madness1", "MixedType/Ruin+Madness/AC_Ruin_Madness2", "MixedType/Ruin+Madness/AC_Ruin_Madness3"));
+
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_FRAUD_SECLUSION, 
+                "MixedType/Fraud+Seclusion/AC_Fraud_Seclusion1", "MixedType/Fraud+Seclusion/AC_Fraud_Seclusion2", "MixedType/Fraud+Seclusion/AC_Fraud_Seclusion3"));
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_FRAUD_MADNESS, 
+                "MixedType/Fraud+Madness/AC_Fraud_Madness1", "MixedType/Fraud+Madness/AC_Fraud_Madness2", "MixedType/Fraud+Madness/AC_Fraud_Madness3"));
+
+            alienDatas.Add(new AlienData(ALIENTYPE.AT_SECLUSION_MADNESS, 
+                "MixedType/Seclusion+Madness/AC_Seclusion_Madness1", "MixedType/Seclusion+Madness/AC_Seclusion_Madness2", "MixedType/Seclusion+Madness/AC_Seclusion_Madness3"));
         }
         else
         {
@@ -38,105 +83,152 @@ public class GameManager : MonoBehaviour
     }
 
     #region EVOLUTION
-    // 게임 시작 후 간단한 배경 스토리와 게임의 목적이 주어진다.
-    // 선택) 이름 짓고 게임 시작
-    // 미니게임을 통해 아이템을 얻는다. (잘할 시 더 좋은 보상 지급)
+    public void Add_Point(PROPERTYTYPE type, int pointValue)
+    {
+        m_alienPoint[(int)type] += pointValue;
+        Update_Alien();
+    }
 
     public void Update_Alien()
     {
-        // 보상을 인벤토리에서 선택해서 먹인다.
-        // 일정 수치마다 성장한다.
-        // 성장이 끝나면 엔딩과 엔드카드가 나오고 도감에 추가된다.
+        // 일정 수치마다 외관 변화
+        bool update = false;
 
+        int sumPoint = 0;
+        for (int i = 0; i < m_alienPoint.Length; ++i)
+            sumPoint += m_alienPoint[i];
 
-        // 일정 수치를 넘었다면 겉모습 변화된다. 0 ~ 14 / 15 ~ 29
-        // 30 ~ 44를 넘었다면 최종 성장 완료 및 도감 추가
-        // 우선 순위 : 파멸 > 선 > 사기 > 은둔 > 광기 
+        if (sumPoint >= 45)       { m_currentLevel = 3; update = true; } // 3단계
+        else if(sumPoint >= 30)   { m_currentLevel = 2; update = true; } // 2단계
+        else if (sumPoint >= 15)  { m_currentLevel = 1; update = true; } // 1단계
 
+        if (update == false)
+            return;
 
-        // 1가지의 타입 포인트만 존재하는지 검사
-        // 1가지의 타입만 존재하면
+        if (Is_SinglePoint()) { Single_Priority(); }
+        else { Combin_Priority(); }
     }
 
-    public void UpdateStatusObject()
+    private bool Is_SinglePoint()
     {
-        // 포인트들을 리스트에 담아 정렬
-        List<(string, int, int)> points = new List<(string, int, int)>
+        int valueCount = 0;
+        for (int i = 0; i < m_alienPoint.Length; ++i)
         {
-            //("destroy", destroyPoints, 1),
-            //("good", goodPoints, 2),
-            //("cheat", cheatPoints, 3),
-            //("seclusion", seclusionPoints, 4),
-            //("chaos", chaosPoints, 5)
-        };
+            if (m_alienPoint[i] > 0)
+                valueCount++;
+        }
 
-        // 포인트 우선순위대로 정렬 (값이 같으면 우선순위가 높은 순서대로)
-        points.Sort((a, b) =>
+        return valueCount == 1; //1이라면 참 반환
+    }
+
+    private void Single_Priority()
+    {
+        // 한가지의 포인트를 제외하고 모두 0포인트인 경우 해당 포인트 외계인으로 진화
+        if (m_alienPoint[(int)PROPERTYTYPE.PT_RUIN] > 0)          { Set_Alien(alienDatas[(int)ALIENTYPE.AT_RUIN]);      }
+        else if (m_alienPoint[(int)PROPERTYTYPE.PT_ZEN] > 0)      { Set_Alien(alienDatas[(int)ALIENTYPE.AT_ZEN]);       }
+        else if(m_alienPoint[(int)PROPERTYTYPE.PT_FRAUD] > 0)     { Set_Alien(alienDatas[(int)ALIENTYPE.AT_FRAUD]);     }
+        else if(m_alienPoint[(int)PROPERTYTYPE.PT_SECLUSION] > 0) { Set_Alien(alienDatas[(int)ALIENTYPE.AT_SECLUSION]); }
+        else if(m_alienPoint[(int)PROPERTYTYPE.PT_MADNESS] > 0)   { Set_Alien(alienDatas[(int)ALIENTYPE.AT_MADNESS]);   }
+    }
+
+    private void Combin_Priority()
+    {
+        // 포인트가 높은 순서대로 정렬 후 제일 높은 포인트 2개를 골라 해당 조합으로 진화
+        PROPERTYTYPE[] sortTypes = Sort_PointPriority();
+        PROPERTYTYPE type1 = sortTypes[0];
+        PROPERTYTYPE type2 = sortTypes[1];
+
+        if (type1 == PROPERTYTYPE.PT_ZEN && type2 == PROPERTYTYPE.PT_RUIN || 
+            type1 == PROPERTYTYPE.PT_RUIN && type2 == PROPERTYTYPE.PT_ZEN)
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_ZEN_RUIN]);
+
+        else if (type1 == PROPERTYTYPE.PT_ZEN && type2 == PROPERTYTYPE.PT_FRAUD || 
+            type1 == PROPERTYTYPE.PT_FRAUD && type2 == PROPERTYTYPE.PT_ZEN)
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_ZEN_FRAUD]);
+
+        else if(type1 == PROPERTYTYPE.PT_ZEN && type2 == PROPERTYTYPE.PT_SECLUSION || 
+            type1 == PROPERTYTYPE.PT_SECLUSION && type2 == PROPERTYTYPE.PT_ZEN)
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_ZEN_SECLUSION]);
+
+        else if (type1 == PROPERTYTYPE.PT_ZEN && type2 == PROPERTYTYPE.PT_MADNESS || 
+            type1 == PROPERTYTYPE.PT_MADNESS && type2 == PROPERTYTYPE.PT_ZEN) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_ZEN_MADNESS]);
+
+        else if (type1 == PROPERTYTYPE.PT_RUIN && type2 == PROPERTYTYPE.PT_FRAUD || 
+            type1 == PROPERTYTYPE.PT_FRAUD && type2 == PROPERTYTYPE.PT_RUIN) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_RUIN_FRAUD]);
+
+        else if (type1 == PROPERTYTYPE.PT_RUIN && type2 == PROPERTYTYPE.PT_SECLUSION || 
+            type1 == PROPERTYTYPE.PT_SECLUSION && type2 == PROPERTYTYPE.PT_RUIN) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_RUIN_SECLUSION]);
+
+        else if (type1 == PROPERTYTYPE.PT_RUIN && type2 == PROPERTYTYPE.PT_MADNESS || 
+            type1 == PROPERTYTYPE.PT_MADNESS && type2 == PROPERTYTYPE.PT_RUIN) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_RUIN_MADNESS]);
+
+        else if (type1 == PROPERTYTYPE.PT_FRAUD && type2 == PROPERTYTYPE.PT_SECLUSION || 
+            type1 == PROPERTYTYPE.PT_SECLUSION && type2 == PROPERTYTYPE.PT_FRAUD) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_FRAUD_SECLUSION]); 
+
+        else if (type1 == PROPERTYTYPE.PT_FRAUD && type2 == PROPERTYTYPE.PT_MADNESS || 
+            type1 == PROPERTYTYPE.PT_MADNESS && type2 == PROPERTYTYPE.PT_FRAUD) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_FRAUD_MADNESS]);
+
+        else if (type1 == PROPERTYTYPE.PT_SECLUSION && type2 == PROPERTYTYPE.PT_MADNESS || 
+            type1 == PROPERTYTYPE.PT_MADNESS && type2 == PROPERTYTYPE.PT_SECLUSION) 
+            Set_Alien(alienDatas[(int)ALIENTYPE.AT_SECLUSION_MADNESS]);
+    }
+
+    private PROPERTYTYPE[] Sort_PointPriority()
+    {
+        PROPERTYTYPE[] types = new PROPERTYTYPE[m_alienPoint.Length];
+        for (int i = 0; i < types.Length; ++i)
+            types[i] = (PROPERTYTYPE)i;
+
+        System.Array.Sort(types, (a, b) => m_alienPoint[(int)b].CompareTo(m_alienPoint[(int)a]));
+        return types;
+    }
+
+    private void Set_Alien(AlienData alienData)
+    {
+        m_currentAlienType = alienData.Type;
+
+        // 메인화면 외계인 && 인벤토리 외계인 교체 / 기타 사항은 직접 타입 받아가서 교체
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
         {
-            int comparison = b.Item2.CompareTo(a.Item2);
-            return comparison == 0 ? a.Item3.CompareTo(b.Item3) : comparison;
-        });
+            if (player.GetComponent<SpriteRenderer>() != null)
+            {   // 스프라이트용 애니메이터 교체
+                player.GetComponent<Animator>().runtimeAnimatorController = Get_AlionAnimator(0);
+            }
+            else
+            {
+                // 이미지용 애니메이터 교체
+                // player.GetComponent<Animator>().runtimeAnimatorController = Get_AlionAnimator(1);
+            }
+        }
 
-        // 가장 높은 두 개의 포인트를 선택
-        string highest1 = points[0].Item1;
-        string highest2 = points[1].Item1;
-
-        int objectIndex = GetObjectIndex(highest1, highest2);
-
-        if (objectIndex != -1)
+        if (m_currentLevel == 3)
         {
-            //if (currentActiveObject != null)
-            //{
-            //    currentActiveObject.SetActive(false);
-            //}
-            //currentActiveObject = statusObjects[objectIndex];
-            //currentActiveObject.SetActive(true);
+            // 성장이 끝나면 엔딩과 엔드카드가 나오고 도감에 추가
         }
     }
 
-    // 게임 오브젝트 인덱스를 결정하는 함수
-    private int GetObjectIndex(string highest1, string highest2)
+    public RuntimeAnimatorController Get_AlionAnimator(int type = 0) // 0 스프라이트, 1 이미지
     {
-        int baseIndex = GetBaseIndex(highest1, highest2);
-        if (baseIndex == -1)
+        RuntimeAnimatorController animator = null;
+        int level = Mathf.Max(m_currentLevel - 1, 0);
+
+        if (type == 0)
         {
-            return -1; // 에러 발생 시
+            animator = Resources.Load<RuntimeAnimatorController>("Animation/Alien/SpriteType/" + alienDatas[(int)CurrentAlienType].AnimatrNames[level]);
+        }
+        else if(type == 1)
+        {
+            //animator = Resources.Load<RuntimeAnimatorController>("Animation/Alien/ImageType/" + alienDatas[(int)CurrentAlienType].AnimatrNames[level]);
         }
 
-        int totalPoints = 0;// destroyPoints + cheatPoints + goodPoints + seclusionPoints + chaosPoints;
-        if (totalPoints >= 0 && totalPoints <= 14)
-        {
-            return baseIndex;
-        }
-        else if (totalPoints >= 15 && totalPoints <= 29)
-        {
-            return baseIndex + 15;
-        }
-        else if (totalPoints >= 30 && totalPoints <= 44)
-        {
-            return baseIndex + 30;
-        }
-        return -1; // 범위를 벗어나는 경우
-    }
-
-    private int GetBaseIndex(string highest1, string highest2)
-    {
-        if (highest1 == "good" && highest2 == "good") return 0;
-        if (highest1 == "good" && highest2 == "destroy") return 1;
-        if (highest1 == "good" && highest2 == "cheat") return 2;
-        if (highest1 == "good" && highest2 == "seclusion") return 3;
-        if (highest1 == "good" && highest2 == "chaos") return 4;
-        if (highest1 == "destroy" && highest2 == "destroy") return 5;
-        if (highest1 == "destroy" && highest2 == "cheat") return 6;
-        if (highest1 == "destroy" && highest2 == "seclusion") return 7;
-        if (highest1 == "destroy" && highest2 == "chaos") return 8;
-        if (highest1 == "cheat" && highest2 == "cheat") return 9;
-        if (highest1 == "cheat" && highest2 == "seclusion") return 10;
-        if (highest1 == "cheat" && highest2 == "chaos") return 11;
-        if (highest1 == "seclusion" && highest2 == "seclusion") return 12;
-        if (highest1 == "seclusion" && highest2 == "chaos") return 13;
-        if (highest1 == "chaos" && highest2 == "chaos") return 14;
-        return -1; // 에러 발생 시
+        return animator;
     }
     #endregion
 

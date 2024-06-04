@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 public class MainManager : MonoBehaviour
 {
     [SerializeField] private GameObject m_panelMiniGame;
+
+    private void Start()
+    {
+        UIManager.Instance.Start_FadeIn(0.5f, Color.black);
+    }
 
     #region BUTTON
     public void Open_Profile()
@@ -65,28 +70,27 @@ public class MainManager : MonoBehaviour
     #region SCENE
     public void Load_RuinScene()
     {
-        SceneManager.LoadScene("Destory");
+        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Destory")), 0f, false);
     }
 
     public void Load_ZenScene()
     {
-        //SceneManager.LoadScene("Zen");
+        //UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Destory")), 0f, false);
     }
 
     public void Load_FraudScene()
     {
-        SceneManager.LoadScene("Cheat");
+        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Cheat")), 0f, false);
     }
 
     public void Load_SeclusionScene()
     {
-        Screen.orientation = ScreenOrientation.LandscapeRight;
-        SceneManager.LoadScene("HideAndSeek");
+        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "HideAndSeek")), 0f, false);
     }
 
     public void Load_MadnessScene()
     {
-        //SceneManager.LoadScene("Scene5");
+        //UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Destory")), 0f, false);
     }
     #endregion
 }

@@ -6,7 +6,7 @@ public class StartScreenManager : MonoBehaviour
     #region BUTTON
     public void Play_Game()
     {
-        SceneManager.LoadScene("MainGame");
+        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => SceneManager.LoadScene("MainGame"), 0f, false);
     }
 
     public void Open_Settings()

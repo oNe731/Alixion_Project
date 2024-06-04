@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 // ¿ì¼± ¼øÀ§ : ÆÄ¸ê > ¼± > »ç±â > ÀºµÐ > ±¤±â 
 public enum PROPERTYTYPE { PT_RUIN, PT_ZEN, PT_FRAUD, PT_SECLUSION, PT_MADNESS, PT_END };
@@ -317,4 +317,18 @@ public class GameManager : MonoBehaviour
 #endif
     }
     #endregion
+
+    public IEnumerator Wait_LodeScene(ScreenOrientation type, string name)
+    {
+        Screen.orientation = type;
+        float time = 0f;
+        while (time < 1f)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        SceneManager.LoadScene(name);
+        yield break;
+    }
 }

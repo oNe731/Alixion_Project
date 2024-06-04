@@ -83,7 +83,8 @@ public class HideAndSeekManager : MonoBehaviour
     {
         if (null == m_instance)
         {
-            Screen.orientation = ScreenOrientation.LandscapeRight;
+            UIManager.Instance.Start_FadeIn(0.5f, Color.black);
+            //Screen.orientation = ScreenOrientation.LandscapeRight;
 
             m_instance = this;
             m_player = GameObject.FindGameObjectWithTag("Player");
@@ -94,6 +95,9 @@ public class HideAndSeekManager : MonoBehaviour
         }
         else
             Destroy(this.gameObject);
+
+        // test
+        // Finish_Game("CLEAR");
     }
 
     private void Update()
@@ -240,11 +244,11 @@ public class HideAndSeekManager : MonoBehaviour
 
             // 아이템 3개 생성 및 인벤토리에 추가
 
-            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion1"), GameObject.Find("Canvas").transform.GetChild(0));
+            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Ruin3"), GameObject.Find("Canvas").transform.GetChild(0));
             UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
             GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
 
-            GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion2"), GameObject.Find("Canvas").transform.GetChild(0));
+            GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Zen3"), GameObject.Find("Canvas").transform.GetChild(0));
             UIitem2.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.2f, -30.2f);
             GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>().objectName);
 
@@ -287,13 +291,12 @@ public class HideAndSeekManager : MonoBehaviour
 
     public void Button_Retry()
     {
-        SceneManager.LoadScene("HideAndSeek"); // 해당 씬 재시작
+        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "HideAndSeek")), 0f, false); // 해당 씬 재시작
     }
 
     public void Button_Home()
     {
-        Screen.orientation = ScreenOrientation.Portrait;
-        SceneManager.LoadScene("MainGame");
+        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.Portrait, "MainGame")), 0f, false);
     }
 
     private void Crate_Item()

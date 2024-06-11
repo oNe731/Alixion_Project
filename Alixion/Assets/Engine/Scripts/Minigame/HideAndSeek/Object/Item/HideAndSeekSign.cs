@@ -20,7 +20,7 @@ public class HideAndSeekSign : MonoBehaviour
 
     private void Update()
     {
-        if (HideAndSeekManager.Instance.Pause == true)
+        if (GameManager.Instance.Pause == true)
             return;
 
         if (m_pause)
@@ -57,6 +57,8 @@ public class HideAndSeekSign : MonoBehaviour
 
         m_pause = true;
         m_pausTime = Random.Range(m_pausTimeMin, m_pausTimeMax);
+
+        GetComponent<AudioSource>().Play();
     }
 
     private void OnTriggerExit2D(Collider2D other)

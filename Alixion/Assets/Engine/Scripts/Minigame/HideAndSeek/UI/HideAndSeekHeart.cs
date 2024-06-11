@@ -19,6 +19,9 @@ public class HideAndSeekHeart : MonoBehaviour
         }
 
         for (int i = heartCount; i < m_heart.Length; i++)
+        {
             m_heart[i].sprite = m_heartImage[1];
+            m_heart[i].GetComponent<AudioSource>().Play();
+        }
     }
 }

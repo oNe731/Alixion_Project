@@ -26,7 +26,7 @@ public class HideAndSeekTimer : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (HideAndSeekManager.Instance.GamePlay == false)
+        if (GameManager.Instance.IsMiniGame == false)
             Destroy(gameObject);
 
         transform.position = m_Owner.transform.position + new Vector3(-0.1f, 0.28f, 0f);

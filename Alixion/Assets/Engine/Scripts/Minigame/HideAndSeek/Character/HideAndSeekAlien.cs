@@ -12,23 +12,34 @@ public class HideAndSeekAlien : MonoBehaviour
     private Coroutine m_coroutine = null;
     private bool m_dark = false;
 
+    private AudioSource m_audioSource = null;
+
     private void Awake()
     {
         m_animator = GetComponent<Animator>();
         m_collider = GetComponent<Collider2D>();
+        m_audioSource = GetComponent<AudioSource>();
         m_animator.StartPlayback(); // 애니메이션 정지
     }
 
     private void Update()
     {
         if (Input.touchCount <= 0)
+        {
+            if (m_audioSource.isPlaying == true)
+                m_audioSource.Stop();
             return;
+        }
+
 
         Touch touch = Input.GetTouch(0);
         if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
         {
             if (touch.position.y > (Screen.height * 4 / 5))
                 return;
+
+            if (m_audioSource.isPlaying == false)
+                m_audioSource.Play();
 
             float dir = DetermineTouchSide(touch.position);
             if (HideAndSeekManager.Instance.Reversal == false)
@@ -37,6 +48,11 @@ public class HideAndSeekAlien : MonoBehaviour
                 HideAndSeekManager.Instance.Scroll_Game(-dir);
 
             Check_Overlap(false);
+        }
+        else
+        {
+            if (m_audioSource.isPlaying == true)
+                m_audioSource.Stop();
         }
     }
 

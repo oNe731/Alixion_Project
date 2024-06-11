@@ -6,32 +6,23 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
-public class HideAndSeekManager : MonoBehaviour
+public class HideAndSeekManager : LevelManager
 {
-    public enum LEVEL { LV_STARTMETHOD, LV_START, LV_PLAY, LV_END };
-
     private static HideAndSeekManager m_instance = null;
     public static HideAndSeekManager Instance => m_instance;
 
     [SerializeField] private TMP_Text m_timerTxt;
-    [SerializeField] private GameObject m_gametxt;
     [SerializeField] private Slider m_barSlider;
     [SerializeField] private HideAndSeekHeart m_Heart;
-    [SerializeField] private GameObject m_darkPanel;
+    [SerializeField] private GameObject m_finishPanel;
     [SerializeField] private GameObject m_retryButton;
     [SerializeField] private GameObject m_homeButton;
-    [SerializeField] private GameObject m_startPanel;
     [SerializeField] private GameObject m_methodPanel;
 
-    private LEVEL m_level = LEVEL.LV_STARTMETHOD;
-    private Image m_gametxtImage;
-    private RectTransform m_gametxtTransform;
-
     private GameObject m_player;
-    private bool m_gamePlay = false;
     private bool m_gameStop = false;
     private bool m_monitor  = false;
-    private bool m_pause    = false;
+
     private float m_timer = 60f;
     private float m_speed = 1f;
 
@@ -46,13 +37,6 @@ public class HideAndSeekManager : MonoBehaviour
 
     private GameObject m_goalFlag = null;
 
-    public LEVEL CurrentLevel
-    {
-        get => m_level;
-        set => m_level = value;
-    }
-
-    public bool GamePlay => m_gamePlay;
     public bool Monitor
     {
         get => m_monitor;
@@ -62,11 +46,6 @@ public class HideAndSeekManager : MonoBehaviour
     {
        get => m_gameStop;
        set => m_gameStop = value;
-    }
-    public bool Pause
-    {
-        get => m_pause;
-        set => m_pause = value;
     }
     public float Speed
     {
@@ -82,83 +61,58 @@ public class HideAndSeekManager : MonoBehaviour
     private void Awake()
     {
         if (null == m_instance)
-        {
-            UIManager.Instance.Start_FadeIn(0.5f, Color.black);
-            //Screen.orientation = ScreenOrientation.LandscapeRight;
-
             m_instance = this;
-            m_player = GameObject.FindGameObjectWithTag("Player");
-
-            m_itemCreate   = Random.Range(m_itemCreateMin, m_itemCreateMax);
-            m_gametxtImage     = m_gametxt.GetComponent<Image>();
-            m_gametxtTransform = m_gametxt.GetComponent<RectTransform>();
-        }
         else
             Destroy(this.gameObject);
 
-        // test
-        // Finish_Game("CLEAR");
+        Screen.orientation = ScreenOrientation.LandscapeRight;
+        Main.UIManager.Instance.Start_FadeIn(0.5f, Color.black);
+
+        m_player = GameObject.FindGameObjectWithTag("Player");
+        m_itemCreate = Random.Range(m_itemCreateMin, m_itemCreateMax);
     }
 
     private void Update()
     {
-        if(m_level == LEVEL.LV_STARTMETHOD)
+        if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
+            return;
+
+        m_timer -= Time.deltaTime;
+        if (m_timer <= 0.8f)
         {
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
-                {
-                    m_methodPanel.SetActive(false);
-                    m_startPanel.SetActive(true);
-                    m_level = LEVEL.LV_START;
-                }
-            }
+            m_timerTxt.text = "00:00";
+            Finish_Game(FinishPanel.FinishType.FT_FAIL);
         }
-        else if(m_level == LEVEL.LV_PLAY)
+        else
         {
-            if (m_pause == true) // 일시정지
-                return;
+            m_timerTxt.text = string.Format("{0:00}:{1:00}",
+                Mathf.FloorToInt(m_timer / 60f),
+                Mathf.FloorToInt(m_timer % 60f));
 
-            if (m_gamePlay)
+            if (m_reversal)
             {
-                m_timer -= Time.deltaTime;
-                if (m_timer <= 0.8f)
+                m_reversalTime += Time.deltaTime;
+                if (m_reversalTime > 10f)
                 {
-                    m_timerTxt.text = "00:00";
-                    Finish_Game("FAIL");
-                }
-                else
-                {
-                    m_timerTxt.text = string.Format("{0:00}:{1:00}",
-                        Mathf.FloorToInt(m_timer / 60f),
-                        Mathf.FloorToInt(m_timer % 60f));
-
-                    if (m_reversal)
-                    {
-                        m_reversalTime += Time.deltaTime;
-                        if (m_reversalTime > 10f)
-                        {
-                            m_reversal = false;
-                            m_reversalTime = 0f;
-                            m_player.transform.GetChild(1).gameObject.SetActive(false);
-                        }
-                    }
+                    m_reversal = false;
+                    m_reversalTime = 0f;
+                    m_player.transform.GetChild(1).gameObject.SetActive(false);
                 }
             }
         }
     }
 
-    public void Start_Game()
+    public override void Start_Game()
     {
-        m_gamePlay = true;
-        m_level = LEVEL.LV_PLAY;
+        GameManager.Instance.IsMiniGame = true;
+
         m_player.GetComponent<Animator>().StopPlayback(); // 애니메이션 재생
+        Camera.main.GetComponent<AudioSource>().Play();
     }
 
     public void Scroll_Game(float touchDir)
     {
-        if (m_gamePlay == false || m_monitor == true || m_pause == true) // 게임 시작 여부/ 감시자 효과 / 일시정지
+        if (GameManager.Instance.IsMiniGame == false || m_monitor == true || GameManager.Instance.Pause == true) // 게임 시작 여부/ 감시자 효과 / 일시정지
             return;
 
         if (m_gameStop == true && touchDir == 1f) // 판넬 효과
@@ -209,7 +163,7 @@ public class HideAndSeekManager : MonoBehaviour
         // 게임 종료 판별
         if (m_barSlider.value == m_barSlider.maxValue)
         {
-            Finish_Game("CLEAR");
+            Finish_Game(FinishPanel.FinishType.FT_CLEAR);
         }
         else
         {
@@ -218,65 +172,24 @@ public class HideAndSeekManager : MonoBehaviour
         }
     }
 
-    private void Finish_Game(string str)
+    private void Finish_Game(FinishPanel.FinishType finishType)
     {
-        m_gamePlay = false;
-        m_darkPanel.SetActive(true);
-        m_gametxt.SetActive(true);
+        GameManager.Instance.IsMiniGame = false;
         m_player.GetComponent<Animator>().StartPlayback();
 
-        if (str == "CLEAR")
+        m_finishPanel.SetActive(true);
+        if (finishType == FinishPanel.FinishType.FT_CLEAR)
         {
-            m_gametxtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Clear");
-            Clear_Game();
+            m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_CLEAR);
+            if (m_timer >= 10f)
+                m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Seclusion1", "UI_Item_Seclusion2", "UI_Item_Seclusion3");
+            else if (m_timer >= 5f)
+                m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Seclusion1", "UI_Item_Seclusion2");
+            else
+                m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Seclusion1");
         }
-        else if(str == "FAIL")
-            m_gametxtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Fail");
-    }
-
-    private void Clear_Game()
-    {
-        if (m_timer >= 10f) // 별 3개
-        {
-            m_darkPanel.transform.GetChild(1).gameObject.SetActive(true);
-            m_darkPanel.transform.GetChild(2).gameObject.SetActive(true);
-            m_darkPanel.transform.GetChild(3).gameObject.SetActive(true);
-
-            // 아이템 3개 생성 및 인벤토리에 추가
-
-            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Ruin3"), GameObject.Find("Canvas").transform.GetChild(0));
-            UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
-            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
-
-            GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Zen3"), GameObject.Find("Canvas").transform.GetChild(0));
-            UIitem2.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.2f, -30.2f);
-            GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>().objectName);
-
-            GameObject UIitem3 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion3"), GameObject.Find("Canvas").transform.GetChild(0));
-            UIitem3.GetComponent<RectTransform>().anchoredPosition = new Vector2(104f, -31.1f);
-            GameManager.Instance.Inventory.Add_Item(UIitem3.GetComponent<ItemData>().objectName);
-        }
-        else if (m_timer >= 5f) // 별 2개
-        {
-            m_darkPanel.transform.GetChild(1).gameObject.SetActive(true);
-            m_darkPanel.transform.GetChild(2).gameObject.SetActive(true);
-
-            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion1"), GameObject.Find("Canvas").transform.GetChild(0));
-            UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
-            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
-
-            GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion2"), GameObject.Find("Canvas").transform.GetChild(0));
-            UIitem2.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.2f, -30.2f);
-            GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>().objectName);
-        }
-        else // 별 1개
-        {
-            m_darkPanel.transform.GetChild(1).gameObject.SetActive(true);
-
-            GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/UI_Item_Seclusion1"), GameObject.Find("Canvas").transform.GetChild(0));
-            UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-103f, -30.7f);
-            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
-        }
+        else if(finishType == FinishPanel.FinishType.FT_FAIL)
+            m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_FAIL);
     }
 
     public void Update_Heart(int heartCount)
@@ -285,18 +198,8 @@ public class HideAndSeekManager : MonoBehaviour
         if (heartCount == 0)
         {
             // 게임 실패
-            Finish_Game("FAIL");
+            Finish_Game(FinishPanel.FinishType.FT_FAIL);
         }
-    }
-
-    public void Button_Retry()
-    {
-        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "HideAndSeek")), 0f, false); // 해당 씬 재시작
-    }
-
-    public void Button_Home()
-    {
-        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.Portrait, "MainGame")), 0f, false);
     }
 
     private void Crate_Item()
@@ -336,26 +239,7 @@ public class HideAndSeekManager : MonoBehaviour
 
     public void Button_MethodPanel()
     {
-        m_pause = true;
+        GameManager.Instance.Pause = true;
         m_methodPanel.SetActive(true);
-    }
-
-
-    public void False_Pause()
-    {
-        StartCoroutine(Wait_Pause());
-    }
-
-    private IEnumerator Wait_Pause()
-    {
-        float time = 0;
-        while (time < 0.5f)
-        {
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        m_pause = false;
-        yield break;
     }
 }

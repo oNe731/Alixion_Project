@@ -14,6 +14,9 @@ public class HideAndSeekPuddle : MonoBehaviour
         // 플레이어와 충돌 시 속도 슬로우
         if (other.gameObject.name == "Alien")
         {
+            if(GetComponent<AudioSource>().isPlaying == false)
+                GetComponent<AudioSource>().Play();
+
             m_beforSpeed = HideAndSeekManager.Instance.Speed;
             HideAndSeekManager.Instance.Speed *= Random.Range(m_speedMin, m_speedMax);
             other.gameObject.transform.GetChild(0).gameObject.SetActive(true);

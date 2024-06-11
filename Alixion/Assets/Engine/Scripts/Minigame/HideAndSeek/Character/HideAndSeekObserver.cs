@@ -25,9 +25,12 @@ public class HideAndSeekObserver : MonoBehaviour
     private float m_shakeMagnitude = 0.1f; // 흔들리는 강도
     private Coroutine m_coroutine = null;
 
+    private AudioSource m_audioSource = null;
+
     private void Awake()
     {
         m_spriteRenderer = GetComponent<SpriteRenderer>();
+        m_audioSource = GetComponent<AudioSource>();
 
         m_playerObj = GameObject.FindGameObjectWithTag("Player");
         m_player    = m_playerObj.GetComponent<HideAndSeekAlien>();
@@ -36,7 +39,7 @@ public class HideAndSeekObserver : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (HideAndSeekManager.Instance.GamePlay == false || HideAndSeekManager.Instance.Pause == true)
+        if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
             return;
 
         m_time += Time.deltaTime;
@@ -59,13 +62,16 @@ public class HideAndSeekObserver : MonoBehaviour
 
     private IEnumerator Shake(Action onComplete = null)
     {
+        m_audioSource.clip = Resources.Load<AudioClip>("Sonds/Effect/MiniGame/Seclusion_Game/BeforeLaser");
+        m_audioSource.Play();
+
         m_check = true;
         Vector3 m_originalPosition = transform.position;
 
         float time = 0.0f;
         while (time < m_shakeDuration)
         {
-            if(HideAndSeekManager.Instance.Pause == true)
+            if(GameManager.Instance.Pause == true)
                 yield return null;
 
             time += Time.deltaTime;
@@ -77,7 +83,7 @@ public class HideAndSeekObserver : MonoBehaviour
 
         transform.localPosition = m_originalPosition;
 
-        if (HideAndSeekManager.Instance.Pause == true)
+        if (GameManager.Instance.Pause == true)
             yield return null;
 
         if (onComplete != null)
@@ -88,6 +94,9 @@ public class HideAndSeekObserver : MonoBehaviour
 
     private IEnumerator Check()
     {
+        m_audioSource.clip = Resources.Load<AudioClip>("Sonds/Effect/MiniGame/Seclusion_Game/Laser");
+        m_audioSource.Play();
+
         HideAndSeekManager.Instance.Monitor = true;
         m_spriteRenderer.sprite = m_sprite[1];
         m_player.Check_Overlap();

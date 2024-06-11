@@ -1,152 +1,165 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Slingshot : MonoBehaviour
+﻿namespace Fraud
 {
-    public LineRenderer[] lineRenderers;
-    public Transform[] stripPositions;
-    public Transform center;
-    public Transform idlePosition;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-    public Vector3 currentPosition;
-
-    public float maxLength;
-
-    public float bottomBoundary;
-
-    bool isMouseDown;
-
-    public GameObject[] birdPrefabs; // Array of bird prefabs
-
-    public float birdPositionOffset;
-
-    Rigidbody2D bird;
-    Collider2D birdCollider;
-
-    public float force;
-
-    void Start()
+    public class Slingshot : MonoBehaviour
     {
-        lineRenderers[0].positionCount = 2;
-        lineRenderers[1].positionCount = 2;
-        lineRenderers[0].SetPosition(0, stripPositions[0].position);
-        lineRenderers[1].SetPosition(0, stripPositions[1].position);
+        [SerializeField] private LineRenderer[] m_lineRenderers;
+        [SerializeField] private Transform[] m_stripPositions;
+        [SerializeField] private Transform m_center;
+        [SerializeField] private Transform m_idlePosition;
 
-        CreateBird();
-    }
+        [SerializeField] private GameObject[] m_birdPrefabs;
 
-    void CreateBird()
-    {
-        // Select a random bird prefab from the array
-        GameObject selectedBirdPrefab = birdPrefabs[Random.Range(0, birdPrefabs.Length)]; // 랜덤하게 나감근데 이걸 순서대로...
-        bird = Instantiate(selectedBirdPrefab).GetComponent<Rigidbody2D>();
-        birdCollider = bird.GetComponent<Collider2D>();
-        birdCollider.enabled = false;
+        [SerializeField] private bool m_isMouseDown = false;
+        [SerializeField] private float m_force = 5f;
+        [SerializeField] private float m_maxLength = 3f;
+        [SerializeField] private float m_bottomBoundary = -4f;
+        [SerializeField] private float m_birdPositionOffset = - 0.4f;
 
-        bird.isKinematic = true;
+        private Vector3 m_currentPosition = Vector3.zero;
+        private AudioSource m_audioSource;
+        private Rigidbody2D m_birdRigidbody;
+        private Collider2D m_birdCollider;
 
-        ResetStrips();
-    }
+        private float m_time = 0f;
 
-    void Update()
-    {
-        if (isMouseDown)
+        void Start()
         {
+            m_audioSource = GetComponent<AudioSource>();
+
+            m_lineRenderers[0].positionCount = 2;
+            m_lineRenderers[1].positionCount = 2;
+            m_lineRenderers[0].SetPosition(0, m_stripPositions[0].position);
+            m_lineRenderers[1].SetPosition(0, m_stripPositions[1].position);
+
+            Reset_Strips();
+            Create_Bird();
+        }
+
+        void Update()
+        {
+            if (GameManager.Instance.IsMiniGame == false)
+                return;
+
+            if(m_birdRigidbody == null)
+            {
+                m_time += Time.deltaTime;
+                if (m_time > 1f)
+                {
+                    m_time = 0f;
+                    Create_Bird();
+                }
+            }
+
+            if (m_isMouseDown == false)
+                return;
+
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = 10;
 
-            currentPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            currentPosition = center.position + Vector3.ClampMagnitude(currentPosition
-                - center.position, maxLength);
+            m_currentPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            if (m_currentPosition.y >= m_center.transform.position.y)
+                m_currentPosition.y = m_center.transform.position.y;
 
-            currentPosition = ClampBoundary(currentPosition);
+            m_currentPosition = m_center.position + Vector3.ClampMagnitude(m_currentPosition - m_center.position, m_maxLength);
+            m_currentPosition = Clamp_Boundary(m_currentPosition);
+            Set_Strips(m_currentPosition);
+        }
 
-            SetStrips(currentPosition);
+        private void OnMouseDown()
+        {
+            if (GameManager.Instance.IsMiniGame == false)
+                return;
+            
+            m_isMouseDown = true;
+            //Create_Bird();
+        }
 
-            if (birdCollider)
+        private void OnMouseUp()
+        {
+            if (GameManager.Instance.IsMiniGame == false)
+                return;
+
+            if(m_birdRigidbody != null)
+                Shoot();
+
+            m_isMouseDown = false;
+            m_currentPosition = m_idlePosition.position;
+            Reset_Strips();
+        }
+
+        void Create_Bird()
+        {
+            if (m_birdRigidbody != null)
+                return;
+
+            m_birdRigidbody = Instantiate(m_birdPrefabs[Random.Range(0, m_birdPrefabs.Length)]).GetComponent<Rigidbody2D>();
+            m_birdRigidbody.isKinematic = true;
+
+            m_birdCollider = m_birdRigidbody.GetComponent<Collider2D>();
+            m_birdCollider.enabled = false;
+
+            Set_Strips(m_currentPosition);
+        }
+
+        void Shoot()
+        {
+            if (m_audioSource != null)
+                m_audioSource.PlayOneShot(m_audioSource.clip);
+
+            if (m_birdCollider)
+                m_birdCollider.enabled = true;
+
+            Vector3 birdForce = (m_currentPosition - m_center.position) * m_force * -1;
+            m_birdRigidbody.velocity = birdForce;
+
+            m_birdRigidbody = null;
+            m_birdCollider = null;
+        }
+
+        void Reset_Strips()
+        {
+            m_currentPosition = m_idlePosition.position;
+            Set_Strips(m_currentPosition);
+        }
+
+        void Set_Strips(Vector3 position)
+        {
+            m_lineRenderers[0].SetPosition(1, position);
+            m_lineRenderers[1].SetPosition(1, position);
+
+            if (m_birdRigidbody)
             {
-                birdCollider.enabled = true;
+                Vector3 dir = position - m_center.position;
+                m_birdRigidbody.transform.position = position + dir.normalized * m_birdPositionOffset;
+                m_birdRigidbody.transform.right = -dir.normalized;
             }
         }
-        else
+
+        Vector3 Clamp_Boundary(Vector3 vector)
         {
-            ResetStrips();
-        }
-    }
-
-    private void OnMouseDown()
-    {
-        isMouseDown = true;
-    }
-
-    private void OnMouseUp()
-    {
-        isMouseDown = false;
-        Shoot();
-        currentPosition = idlePosition.position;
-    }
-
-    void Shoot()
-    {
-        bird.isKinematic = false;
-        Vector3 birdForce = (currentPosition - center.position) * force * -1;
-        bird.velocity = birdForce;
-
-        bird.GetComponent<Bird>().Release();
-
-        bird = null;
-        birdCollider = null;
-        Invoke("CreateBird", 2);
-    }
-
-    void ResetStrips()
-    {
-        currentPosition = idlePosition.position;
-        SetStrips(currentPosition);
-    }
-
-    void SetStrips(Vector3 position)
-    {
-        lineRenderers[0].SetPosition(1, position);
-        lineRenderers[1].SetPosition(1, position);
-
-        if (bird)
-        {
-            Vector3 dir = position - center.position;
-            bird.transform.position = position + dir.normalized * birdPositionOffset;
-            bird.transform.right = -dir.normalized;
-        }
-    }
-
-    Vector3 ClampBoundary(Vector3 vector)
-    {
-        vector.y = Mathf.Clamp(vector.y, bottomBoundary, 1000);
-        return vector;
-    }
-
-    public void ChangeBird(GameObject newBirdPrefab)
-    {
-        if (bird)
-        {
-            Destroy(bird.gameObject);
+            vector.y = Mathf.Clamp(vector.y, m_bottomBoundary, 1000);
+            return vector;
         }
 
-        // Destroy all existing bird objects in the scene
-        GameObject[] existingBirds = GameObject.FindGameObjectsWithTag("Word");
-        foreach (GameObject existingBird in existingBirds)
+        public void Change_Bird(GameObject newBirdPrefab)
         {
-            Destroy(existingBird);
+            if (m_birdRigidbody == null)
+                return;
+
+            Destroy(m_birdRigidbody.gameObject);
+
+            m_birdRigidbody = Instantiate(newBirdPrefab).GetComponent<Rigidbody2D>();
+            m_birdRigidbody.isKinematic = true;
+
+            m_birdCollider = m_birdRigidbody.GetComponent<Collider2D>();
+            m_birdCollider.enabled = false;
+
+            Set_Strips(m_currentPosition);
         }
-
-        GameObject selectedBirdPrefab = newBirdPrefab;
-        bird = Instantiate(selectedBirdPrefab).GetComponent<Rigidbody2D>();
-        birdCollider = bird.GetComponent<Collider2D>();
-        birdCollider.enabled = false;
-
-        bird.isKinematic = true;
-
-        ResetStrips();
     }
 }
 

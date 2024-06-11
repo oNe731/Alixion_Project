@@ -1889,12 +1889,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bed7c5264f7968146816c1e70b12479c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockPrefabs:
+  m_blockPrefabs:
   - {fileID: 4600641281237666261, guid: 2e1b605313fd8fd49b3458f5c22166cb, type: 3}
   - {fileID: 5813056994288033833, guid: 21e5e6042915e0d4dbc993c68ceced02, type: 3}
-  spawnAreaMin: {x: -2, y: 0}
-  spawnAreaMax: {x: 1.6, y: 4}
-  numberOfBlocks: 20
+  m_spawnAreaMin: {x: -2, y: 0}
+  m_spawnAreaMax: {x: 1.6, y: 4}
 --- !u!114 &1209879400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1907,15 +1906,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43725aea92b57b44ab341fff86db3dc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 5541324336552004055}
-  timeText: {fileID: 3287786210650515048}
+  m_timeText: {fileID: 3287786210650515048}
+  m_scoreText: {fileID: 5541324336552004055}
   m_finishPanel: {fileID: 1482178335}
-  buttonClickSound: {fileID: 8300000, guid: 1d90fc637805f5141bc99b6f4a6f3c73, type: 3}
-  timeLimit: 30
-  scoreToChange1Scene: 5
-  scoreToChange2Scene: 12
-  scoreToChange3Scene: 20
-  score: 0
 --- !u!82 &1209879401
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2995,7 +2988,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: a29be4e7fdc70c540b20199a0191b376, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.516
   m_Pitch: 1
@@ -3263,23 +3256,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca46d777a2a52254e8c62031b4ae44a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderers:
+  m_lineRenderers:
   - {fileID: 6299788514603701300}
   - {fileID: 1919681548356026372}
-  stripPositions:
+  m_stripPositions:
   - {fileID: 4717299956647146074}
   - {fileID: 6411287172597850672}
-  center: {fileID: 3320756045562605761}
-  idlePosition: {fileID: 6606784143239470787}
-  shootSound: {fileID: 8300000, guid: a29be4e7fdc70c540b20199a0191b376, type: 3}
-  currentPosition: {x: 0, y: 0, z: 0}
-  maxLength: 4
-  bottomBoundary: -4
-  birdPrefabs:
+  m_center: {fileID: 3320756045562605761}
+  m_idlePosition: {fileID: 6606784143239470787}
+  m_birdPrefabs:
   - {fileID: 5333000282489109662, guid: 71990a3101c88684ebc424fe96e2a9b7, type: 3}
   - {fileID: 4351696421126352888, guid: 59d6a31be5a395244b9fcd1aa9f397ae, type: 3}
-  birdPositionOffset: -0.4
-  force: 5
+  m_isMouseDown: 0
+  m_force: 5
+  m_maxLength: 3
+  m_bottomBoundary: -4
+  m_birdPositionOffset: -0.4
 --- !u!1 &603851183591201650
 GameObject:
   m_ObjectHideFlags: 0
@@ -4143,25 +4135,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Slingshot, Assembly-CSharp
-        m_MethodName: ChangeBird
+      - m_Target: {fileID: 531390959946941297}
+        m_TargetAssemblyTypeName: Fraud.Slingshot, Assembly-CSharp
+        m_MethodName: Change_Bird
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 4351696421126352888, guid: 59d6a31be5a395244b9fcd1aa9f397ae, type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TimeScoreManager, Assembly-CSharp
-        m_MethodName: PlayButtonClickSound
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4570,25 +4550,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Slingshot, Assembly-CSharp
-        m_MethodName: ChangeBird
+      - m_Target: {fileID: 531390959946941297}
+        m_TargetAssemblyTypeName: Fraud.Slingshot, Assembly-CSharp
+        m_MethodName: Change_Bird
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 5333000282489109662, guid: 71990a3101c88684ebc424fe96e2a9b7, type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TimeScoreManager, Assembly-CSharp
-        m_MethodName: PlayButtonClickSound
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

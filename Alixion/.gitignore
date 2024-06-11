@@ -494,6 +494,7 @@ FodyWeavers.xsd
 **/Editor/
 **/TextMesh Pro/
 **/Resources/
+**/UIElementsSchema/
 *.pdf
 *.jpg
 *.png
@@ -501,3 +502,4 @@ FodyWeavers.xsd
 *.otf
 *.txt
 *.keystore
+*.zip

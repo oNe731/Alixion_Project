@@ -1,79 +1,64 @@
-using UnityEngine;
-using System.Collections.Generic;
-
-public class BlockSpawner : MonoBehaviour
+namespace Fraud
 {
-    // 프리팹으로 지정할 블럭들
-    public GameObject[] blockPrefabs;
+    using UnityEngine;
+    using System.Collections.Generic;
 
-    // 블럭이 생성될 범위 설정 (사각형 영역)
-    public Vector2 spawnAreaMin;
-    public Vector2 spawnAreaMax;
-
-    // 생성할 블럭의 수
-    public int numberOfBlocks = 10;
-
-    // 기존 블럭들의 위치를 저장할 리스트
-    private List<Bounds> blockBoundsList = new List<Bounds>();
-
-    void Start()
+    public class BlockSpawner : MonoBehaviour
     {
-        SpawnBlocks();
-    }
+        [SerializeField] private GameObject[] m_blockPrefabs;
+        [SerializeField] private Vector2 m_spawnAreaMin = new Vector2(-2f, 0f);
+        [SerializeField] private Vector2 m_spawnAreaMax = new Vector2(1.6f, 4f);
 
-    void SpawnBlocks()
-    {
-        for (int i = 0; i < numberOfBlocks; i++)
+        private List<Bounds> m_blockBoundsList = new List<Bounds>();
+
+        public void Spawn_Blocks(int BlockCount = 5)
         {
-            // 무작위 위치를 찾기 위한 시도 횟수
-            int attempts = 0;
-            bool positionFound = false;
+            m_blockBoundsList.Clear();
 
-            while (attempts < 100 && !positionFound)
+            for (int i = 0; i < BlockCount; i++)
             {
-                // 무작위 위치 생성
-                float randomX = Random.Range(spawnAreaMin.x, spawnAreaMax.x);
-                float randomY = Random.Range(spawnAreaMin.y, spawnAreaMax.y);
-                Vector2 randomPosition = new Vector2(randomX, randomY);
+                GameObject tempBlock = null;
 
-                // 무작위 블럭 프리팹 선택
-                int randomIndex = Random.Range(0, blockPrefabs.Length);
-                GameObject selectedPrefab = blockPrefabs[randomIndex];
-
-                // 임시로 블럭을 생성해 Bounds를 확인
-                GameObject tempBlock = Instantiate(selectedPrefab, randomPosition, Quaternion.identity);
-                Bounds tempBounds = tempBlock.GetComponent<Renderer>().bounds;
-
-                // 겹치는지 확인
-                bool isOverlapping = false;
-                foreach (Bounds bounds in blockBoundsList)
+                // 무작위 위치를 찾기 위한 시도 횟수
+                int attempts = 0;
+                bool positionFound = false;
+                while (attempts < 100 && !positionFound)
                 {
-                    if (tempBounds.Intersects(bounds))
+                    // 임시로 블럭을 무작위 위치에 생성해 Bounds를 확인
+                    Vector2 randomPosition = new Vector2(Random.Range(m_spawnAreaMin.x, m_spawnAreaMax.x), Random.Range(m_spawnAreaMin.y, m_spawnAreaMax.y));
+                    tempBlock = Instantiate(m_blockPrefabs[Random.Range(0, m_blockPrefabs.Length)], randomPosition, Quaternion.identity);
+                    Bounds tempBounds = tempBlock.GetComponent<Renderer>().bounds;
+
+                    // 겹치는지 확인
+                    bool isOverlapping = false;
+                    foreach (Bounds bounds in m_blockBoundsList)
                     {
-                        isOverlapping = true;
-                        break;
+                        if (tempBounds.Intersects(bounds))
+                        {
+                            isOverlapping = true;
+                            break;
+                        }
                     }
+
+                    // 겹치지 않는 위치라면 블럭 생성 확정
+                    if (isOverlapping == false)
+                    {
+                        m_blockBoundsList.Add(tempBounds);
+                        positionFound = true;
+                    }
+                    else
+                    {
+                        Destroy(tempBlock);
+                    }
+
+                    attempts++;
                 }
 
-                // 겹치지 않는 위치라면 블럭 생성 확정
-                if (!isOverlapping)
-                {
-                    blockBoundsList.Add(tempBounds);
-                    positionFound = true;
-                }
-                else
-                {
+                // 위치를 100번 안에 찾지 못함
+                if (positionFound == false && tempBlock != null)
                     Destroy(tempBlock);
-                }
-
-                attempts++;
-            }
-
-            // 만약 위치를 찾지 못했으면, 경고 메시지 출력
-            if (!positionFound)
-            {
-                Debug.LogWarning("블럭을 놓을 수 있는 위치를 찾지 못했습니다.");
             }
         }
     }
 }
+

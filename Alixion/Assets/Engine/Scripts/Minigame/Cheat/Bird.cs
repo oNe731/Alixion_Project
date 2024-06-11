@@ -1,80 +1,51 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Bird : MonoBehaviour
+﻿namespace Fraud
 {
-    public bool collided;
-    public bool isSmall = false;
-    public bool isBig = false;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
 
-
-    public void Release()
+    public class Bird : MonoBehaviour
     {
-        PathPoints.instance.Clear();
-        StartCoroutine(CreatePathPoints());
-    }
+        public enum TYPE { TYPE_BIG, TYPE_SMALL, TYPE_END }
 
-    IEnumerator CreatePathPoints()
-    {
-        while (true)
+        public TYPE type = TYPE.TYPE_END;
+        private FraudManager m_manager;
+
+        private void Start()
         {
-            if (collided) break;
-            PathPoints.instance.CreateCurrentPathPoint(transform.position);
-            yield return new WaitForSeconds(PathPoints.instance.timeInterval);
+            m_manager = FindObjectOfType<FraudManager>();
         }
-    }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Word_Big"))
-    //    {
-    //        if (isSmall == true)
-    //        {
-    //            Destroy(gameObject);
-    //            return;
-    //        }
-    //        Destroy(collision.gameObject); // 충돌한 오브젝트 파괴
-    //        Destroy(gameObject); // 자신도 파괴
-    //        ScoreManager.instance.IncreaseScore(); // 점수 증가
-    //    }
-    //    if (collision.gameObject.CompareTag("Word_Small"))
-    //    {
-    //        if (isBig == true)
-    //        {
-    //            Destroy(gameObject);
-    //            return;
-    //        }
-    //        Destroy(collision.gameObject); // 충돌한 오브젝트 파괴
-    //        Destroy(gameObject); // 자신도 파괴
-    //        ScoreManager.instance.IncreaseScore(); // 점수 증가
-    //    }
-    //    collided = true;
-    //}
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Word_Big"))
+        private void Update()
         {
-            if (isSmall == true)
+            Vector3 viewportPosition = Camera.main.WorldToViewportPoint(transform.position);
+            if (viewportPosition.x < 0 || viewportPosition.x > 1 || viewportPosition.y < 0 || viewportPosition.y > 1)
+                Destroy(gameObject);
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (GameManager.Instance.IsMiniGame == false)
+                return;
+
+            if (type == TYPE.TYPE_SMALL && collision.gameObject.name == "SmallBallun(Clone)" ||
+               type == TYPE.TYPE_BIG && collision.gameObject.name == "BigBallun(Clone)")
+            {
+                m_manager.Play_Sound("Sonds/Effect/MiniGame/CheDes_Game/ballun");
+
+                Destroy(gameObject);
+                Destroy(collision.gameObject);
+
+                if (m_manager != null)
+                    m_manager.AddScore(1);
+            }
+            else if (type == TYPE.TYPE_SMALL && collision.gameObject.name == "BigBallun(Clone)" ||
+                type == TYPE.TYPE_BIG && collision.gameObject.name == "SmallBallun(Clone)")
             {
                 Destroy(gameObject);
-                return;
             }
-            Destroy(collision.gameObject); // 충돌한 오브젝트 파괴
-            Destroy(gameObject); // 자신도 파괴
-            ScoreManager.instance.IncreaseScore(); // 점수 증가
+
         }
-        if (collision.gameObject.CompareTag("Word_Small"))
-        {
-            if (isBig == true)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Destroy(collision.gameObject); // 충돌한 오브젝트 파괴
-            Destroy(gameObject); // 자신도 파괴
-            ScoreManager.instance.IncreaseScore(); // 점수 증가
-        }
-        collided = true;
     }
 }
+

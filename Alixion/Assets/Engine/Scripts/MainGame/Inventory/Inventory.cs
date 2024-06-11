@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public int m_slotCount = 15;
+    private int m_slotCount = 15;
     private List<InvenSlot> m_slots = new List<InvenSlot>();
 
     private InvenSlot m_selctSlot = null;
     private GameObject m_selectIcon = null;
-    public InvenSlot SelctSlot { set => m_selctSlot = value; }
+    public InvenSlot SelctSlot 
+    {
+        get => m_selctSlot;
+        set => m_selctSlot = value; 
+    }
 
     private void Awake()
     {

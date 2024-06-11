@@ -20,15 +20,27 @@ public class AlienData
     private ALIENTYPE m_type;
     private string[] m_animatrNames;
 
+    private string m_endingName;
+    private string m_endingDialog;
+    private string m_endingCardIamge;
+
     public ALIENTYPE Type => m_type;
     public string[] AnimatrNames => m_animatrNames;
 
-    public AlienData(ALIENTYPE type, string animatrNames1, string animatrNames2, string animatrNames3)
+    public string EndingName => m_endingName;
+    public string EndingDialog => m_endingDialog;
+    public string EndingCardIamge => m_endingCardIamge;
+
+    public AlienData(ALIENTYPE type, string animatrNames1, string animatrNames2, string animatrNames3, string endingName, string endingDialog, string endingCardIamge)
     {
         m_type = type;
         m_animatrNames = new string[3];
         m_animatrNames[0] = animatrNames1;
         m_animatrNames[1] = animatrNames2;
         m_animatrNames[2] = animatrNames3;
+
+        m_endingName      = endingName;
+        m_endingDialog    = endingDialog;
+        m_endingCardIamge = endingCardIamge;
     }
 }

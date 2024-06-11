@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class InvenSlot : MonoBehaviour
 {
-    [SerializeField] private bool m_empty  = true;
-    [SerializeField] private GameObject m_uIItem = null;
-    [SerializeField] private ItemData m_item = null;
-    private Inventory inventory = null;
+    private bool m_empty  = true;
+    private GameObject m_uIItem = null;
+    private ItemData   m_item = null;
+    private Inventory  inventory = null;
 
     public bool EMPTY => m_empty;
     public ItemData Item => m_item;
@@ -39,5 +39,6 @@ public class InvenSlot : MonoBehaviour
     public void Click_Slot()
     {
         inventory.Selct_Slot(this);
+        //GameManager.Instance.Open_InventoryItem(m_item);
     }
 }

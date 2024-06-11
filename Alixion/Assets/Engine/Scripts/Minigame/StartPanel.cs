@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class HideAndSeekStart : MonoBehaviour
+public class StartPanel : MonoBehaviour
 {
+    [SerializeField] private LevelManager m_levelManager;
+
     private Image         m_txtImage;
     private RectTransform m_txtTransform;
 
@@ -24,9 +27,6 @@ public class HideAndSeekStart : MonoBehaviour
 
     private void Update()
     {
-        if (HideAndSeekManager.Instance.CurrentLevel != HideAndSeekManager.LEVEL.LV_START)
-            return;
-
         if (!m_start && Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -40,7 +40,7 @@ public class HideAndSeekStart : MonoBehaviour
         }
         else if (m_start)
         {
-            m_txtTransform.localScale += Vector3.one * 0.08f;
+            m_txtTransform.localScale += Vector3.one * 0.07f;
             if (m_txtTransform.localScale.x > m_maxScale)
             {
                 m_txtTransform.localScale = Vector3.one * m_maxScale;
@@ -60,7 +60,8 @@ public class HideAndSeekStart : MonoBehaviour
                     if (m_wait > 0.2f)
                     {
                         m_wait = 0f;
-                        HideAndSeekManager.Instance.Start_Game();
+
+                        m_levelManager.Start_Game();
                         Destroy(gameObject);
                     }
                 }

@@ -9,7 +9,23 @@ public class MainManager : MonoBehaviour
 
     private void Start()
     {
-        UIManager.Instance.Start_FadeIn(0.5f, Color.black);
+        GameManager.Instance.gameObject.GetComponent<Setting>().Update_AllAudioSources();
+        Main.UIManager.Instance.Start_FadeIn(0.5f, Color.black);
+
+        if (GameManager.Instance.Tutorial == false)
+        {
+            Camera.main.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/BGM/IntroBGM");
+            Camera.main.GetComponent<AudioSource>().Play();
+
+            // 튜토리얼 재생
+            GameManager.Instance.Tutorial = true;
+            GetComponent<MainDialogs>().Start_Dialogs();
+        }
+        else
+        {
+            Camera.main.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/BGM/MainBGM");
+            Camera.main.GetComponent<AudioSource>().Play();
+        }
     }
 
     #region BUTTON
@@ -60,7 +76,10 @@ public class MainManager : MonoBehaviour
 
     public void Button_Minigame()
     {
-        if(m_panelMiniGame.activeSelf == false)
+        GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
+        GetComponent<AudioSource>().Play();
+
+        if (m_panelMiniGame.activeSelf == false)
             m_panelMiniGame.SetActive(true);
         else
             m_panelMiniGame.SetActive(false);
@@ -70,27 +89,37 @@ public class MainManager : MonoBehaviour
     #region SCENE
     public void Load_RuinScene()
     {
-        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Destory")), 0f, false);
+        GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
+        GetComponent<AudioSource>().Play();
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.Portrait, "Destory")), 0f, false); // 세로
     }
 
     public void Load_ZenScene()
     {
-        //UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Destory")), 0f, false);
+        GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
+        GetComponent<AudioSource>().Play();
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Zen")), 0f, false); // 가로
     }
 
     public void Load_FraudScene()
     {
-        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Cheat")), 0f, false);
+        GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
+        GetComponent<AudioSource>().Play();
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.Portrait, "Cheat")), 0f, false); // 세로
     }
 
     public void Load_SeclusionScene()
     {
-        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "HideAndSeek")), 0f, false);
+        GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
+        GetComponent<AudioSource>().Play();
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "HideAndSeek")), 0f, false); // 가로
     }
 
     public void Load_MadnessScene()
     {
-        //UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Destory")), 0f, false);
+        GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
+        GetComponent<AudioSource>().Play();
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Mad")), 0f, false); // 가로
     }
     #endregion
 }

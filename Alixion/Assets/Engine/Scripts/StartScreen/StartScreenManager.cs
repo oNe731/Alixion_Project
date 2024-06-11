@@ -1,22 +1,38 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StartScreenManager : MonoBehaviour
 {
-    #region BUTTON
-    public void Play_Game()
+    public void Start()
     {
-        UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => SceneManager.LoadScene("MainGame"), 0f, false);
-    }
+        GameManager.Instance.gameObject.GetComponent<Setting>().Update_AllAudioSources();
+        Main.UIManager.Instance.Start_FadeIn(0.5f, Color.black);
 
-    public void Open_Settings()
-    {
-        GameManager.Instance.Open_Settings();
-    }
+        GameObject button = null;
+        if(GameManager.Instance.Encyclopedia.Get_EmptyEncyclopedia() == true)
+        {
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Play"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 7f);
 
-    public void Exit_Game()
-    {
-        GameManager.Instance.Exit_Game();
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Setting"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -237f);
+
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Exit"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -467f);
+        }
+        else
+        {
+            // 도감에 1개 이상 존재할 시 도감 버튼 생성
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Play"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 7f);
+
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Encyclopedia"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -237f);
+
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Setting"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -467f);
+
+            button = Instantiate(Resources.Load<GameObject>("Prefabs/StartScreen/Button_Exit"), GameObject.Find("Canvas").transform);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, -697f);
+        }
     }
-    #endregion
 }

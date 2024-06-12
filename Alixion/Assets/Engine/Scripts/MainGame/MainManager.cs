@@ -119,7 +119,7 @@ public class MainManager : MonoBehaviour
     {
         GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
         GetComponent<AudioSource>().Play();
-        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Mad")), 0f, false); // 가로
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Madness")), 0f, false); // 가로
     }
     #endregion
 }

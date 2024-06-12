@@ -15,9 +15,6 @@ public class HideAndSeekManager : LevelManager
     [SerializeField] private Slider m_barSlider;
     [SerializeField] private HideAndSeekHeart m_Heart;
     [SerializeField] private GameObject m_finishPanel;
-    [SerializeField] private GameObject m_retryButton;
-    [SerializeField] private GameObject m_homeButton;
-    [SerializeField] private GameObject m_methodPanel;
 
     private GameObject m_player;
     private bool m_gameStop = false;
@@ -235,11 +232,5 @@ public class HideAndSeekManager : LevelManager
             }
             item.GetComponent<Transform>().position = new Vector3(15f, -3.5f, 0f);
         }
-    }
-
-    public void Button_MethodPanel()
-    {
-        GameManager.Instance.Pause = true;
-        m_methodPanel.SetActive(true);
     }
 }

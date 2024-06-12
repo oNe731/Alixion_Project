@@ -57,7 +57,7 @@ namespace Madness
 
         void Update()
         {
-            if (GameManager.Instance.IsMiniGame == false)
+            if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
                 return;
 
             Update_ScoreText();

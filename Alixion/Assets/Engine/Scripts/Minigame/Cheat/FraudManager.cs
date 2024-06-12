@@ -43,7 +43,7 @@ namespace Fraud
 
         void Update()
         {
-            if (GameManager.Instance.IsMiniGame == false)
+            if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
                 return;
 
             m_currentTime -= Time.deltaTime;

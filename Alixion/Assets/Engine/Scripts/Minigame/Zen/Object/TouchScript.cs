@@ -16,7 +16,7 @@ namespace Zen
 
         private void OnMouseDown()
         {
-            if (m_zenManager == null || GameManager.Instance.IsMiniGame == false)
+            if (m_zenManager == null || GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
                 return;
 
             m_zenManager.Add_Score(m_scoreValue);

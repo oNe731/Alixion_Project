@@ -41,7 +41,7 @@
 
         void Update()
         {
-            if (GameManager.Instance.IsMiniGame == false)
+            if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
                 return;
 
             if(m_birdRigidbody == null)
@@ -71,7 +71,7 @@
 
         private void OnMouseDown()
         {
-            if (GameManager.Instance.IsMiniGame == false)
+            if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
                 return;
             
             m_isMouseDown = true;
@@ -80,7 +80,7 @@
 
         private void OnMouseUp()
         {
-            if (GameManager.Instance.IsMiniGame == false)
+            if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
                 return;
 
             if(m_birdRigidbody != null)

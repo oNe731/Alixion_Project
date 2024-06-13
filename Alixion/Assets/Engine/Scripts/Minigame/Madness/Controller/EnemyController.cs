@@ -8,10 +8,12 @@ namespace Madness
     {
         [SerializeField] private PlayerController m_playerControl;
         [SerializeField] private LayerMask m_groundLayer;
+        [SerializeField] private LayerMask m_objectLayer;
 
         private Transform   m_playerTr;
         private Animator    m_animator;
         private Rigidbody2D m_rigidbody;
+        private SpriteRenderer m_spriteRenderer;
 
         private float m_moveSpeed = 2f; // NPC 이동 속도
 
@@ -30,12 +32,16 @@ namespace Madness
         private float m_collisionCooldown = 2.0f; // 무적시간
         private float m_lastCollisionTime;
 
+        private bool m_Jump = false;
+        private float m_jumpTime = 0f;
+
         private void Awake()
         {
             m_animator = GetComponent<Animator>();
             m_animator.StartPlayback(); // 애니메이션 정지
             m_rigidbody = GetComponent<Rigidbody2D>();
             m_rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            m_spriteRenderer = GetComponent<SpriteRenderer>();
 
             m_lastCollisionTime = -m_collisionCooldown;
             m_playerTr = m_playerControl.gameObject.transform;
@@ -61,23 +67,42 @@ namespace Madness
 
         void Move_OnPlatform()
         {
-            // 좌우 이동
-            float horizontalInput = m_facingRight ? 1f : -1f;
-            m_rigidbody.velocity = new Vector2(horizontalInput * m_moveSpeed, m_rigidbody.velocity.y);
-
-            // 플랫폼 끝에 닿으면 방향 전환
-            if (!Is_Grounded())
+            if(m_Jump == true)
             {
+                m_jumpTime += Time.deltaTime;
+                if(m_jumpTime > 0.1f)
+                {
+                    if(Is_Grounded(0f, 0.6f))
+                        m_Jump = false;
+                }
+            }
+            else if (m_Jump == false && Is_Jump(0.4f, 2.0f)) // 가는 방향 위쪽에 블럭이 있으면 점프
+            {
+                if (!Is_Grounded(0f, 0.6f))
+                    return;
+
+                m_Jump = true;
+                m_jumpTime = 0f;
+                m_rigidbody.velocity = Vector2.zero;
+                m_rigidbody.velocity = new Vector2(m_rigidbody.velocity.x, 5f);
+            }
+            else if (!Is_Grounded(0.4f, 4.0f) || Is_Front()) // 앞에 오브젝트가 있으면 || 플랫폼 끝에 닿으면 방향 전환
+            {
+                if (m_Jump == true || !Is_Grounded(0f, 0.6f))
+                    return;
+
                 // 방향 전환
                 m_facingRight = !m_facingRight;
 
                 // 스프라이트 방향 설정
-                transform.localScale = new Vector3(m_facingRight ? 1f : -1f, 1f, 1f);
-
-                // 이동 방향 변경에 따라 이동 속도 업데이트
-                horizontalInput = m_facingRight ? 1f : -1f;
-                m_rigidbody.velocity = new Vector2(horizontalInput * m_moveSpeed, m_rigidbody.velocity.y);
+                m_spriteRenderer.flipX = !m_facingRight;
             }
+
+            // 좌우 이동
+            float horizontalInput = m_facingRight ? 1f : -1f;
+            m_rigidbody.velocity = new Vector2(horizontalInput * m_moveSpeed, m_rigidbody.velocity.y);
+
+            transform.GetChild(0).gameObject.transform.localPosition = new Vector3(horizontalInput * 0.5f, transform.GetChild(0).gameObject.transform.localPosition.y, transform.GetChild(0).gameObject.transform.localPosition.z);
         }
 
         public void Steal_Item()
@@ -85,6 +110,7 @@ namespace Madness
             if (m_hasStolenItem == true)
                 return;
 
+            transform.GetChild(0).gameObject.SetActive(false);
             m_hasStolenItem = true;
             m_isChasing = true; // 플레이어를 쫓기 시작
             m_chaseTimer = 0f; // 쫓기 타이머 초기화
@@ -107,9 +133,15 @@ namespace Madness
 
             // NPC의 이동 방향 설정 (플레이어를 바라보도록)
             if (direction.x > 0)
-                transform.localScale = new Vector3(1f, 1f, 1f); // 오른쪽을 보도록
+            {
+                m_spriteRenderer.flipX = false;
+                transform.GetChild(0).gameObject.transform.localPosition = new Vector3(0.5f, transform.GetChild(0).gameObject.transform.localPosition.y, transform.GetChild(0).gameObject.transform.localPosition.z);
+            }
             else if (direction.x < 0)
-                transform.localScale = new Vector3(-1f, 1f, 1f); // 왼쪽을 보도록
+            {
+                m_spriteRenderer.flipX = true;
+                transform.GetChild(0).gameObject.transform.localPosition = new Vector3(-0.5f, transform.GetChild(0).gameObject.transform.localPosition.y, transform.GetChild(0).gameObject.transform.localPosition.z);
+            }
 
             m_moveSpeed = 4f;
 
@@ -118,32 +150,66 @@ namespace Madness
 
             // 일정 시간(10초)이 지나면 쫓기 종료
             if (m_chaseTimer >= m_chaseDuration)
-            {
-                m_moveSpeed = 3f;
-                m_isChasing = false;
-                m_hasStolenItem = false; // 다음 아이템 빼앗기를 위해 초기화
-                Debug.Log("쫓기를 종료합니다.");
-                m_animator.SetBool("A_IsChasing", false);
-            }
+                Stop_Chase();
         }
 
-        private bool Is_Grounded()
+        public void Stop_Chase()
         {
-            if (m_facingRight == true)
-            {
-                Vector2 front = new Vector2(transform.position.x + 1, transform.position.y);
-                // 아래 방향으로 레이캐스트
-                RaycastHit2D hit = Physics2D.Raycast(front, Vector2.down, 1.5f, m_groundLayer);
-                return hit.collider != null;
-            }
-            else
-            {
-                Vector2 back = new Vector2(transform.position.x - 1, transform.position.y);
-                // 아래 방향으로 레이캐스트
-                RaycastHit2D hit = Physics2D.Raycast(back, Vector2.down, 1.5f, m_groundLayer);
-                return hit.collider != null;
-            }
+            if (m_isChasing == false)
+                return;
+
+            m_isChasing = false;
+            m_hasStolenItem = false; // 다음 아이템 빼앗기를 위해 초기화
+            transform.GetChild(0).gameObject.SetActive(true);
+            m_animator.SetBool("A_IsChasing", false);
+            m_moveSpeed = 3f;
         }
+
+        private bool Is_Jump(float Xdistance = 0.3f, float Ydistance = 0.7f)
+        {
+            float direction = m_facingRight ? 1f : -1f;
+            RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x + (Xdistance * direction), transform.position.y), Vector2.up, Ydistance, m_groundLayer);
+            //Debug.DrawRay(new Vector2(transform.position.x + (Xdistance * direction), transform.position.y), Vector2.up * Ydistance, Color.red);
+
+            return hit.collider != null;
+        }
+
+        private bool Is_Front(float Xdistance = 0.7f)
+        {
+            Vector2 direction = m_facingRight ? Vector2.right : Vector2.left;
+            RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, Xdistance, m_objectLayer);
+
+            // Debug.DrawRay(transform.position, direction * Xdistance, Color.red);
+
+            RaycastHit2D closestHit = default;
+            float closestDistance = float.MaxValue;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider != null && hit.collider.gameObject != this.gameObject)
+                {
+                    float distance = Vector2.Distance(transform.position, hit.point);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestHit = hit;
+                    }
+                }
+            }
+
+            return closestHit.collider != null;
+        }
+
+        private bool Is_Grounded(float Xdistance = 0.3f, float Ydistance = 1f)
+        {
+            float direction = m_facingRight ? 1f : -1f;
+
+            Vector2 Start = new Vector2(transform.position.x + (Xdistance * direction), transform.position.y);
+            RaycastHit2D hit = Physics2D.Raycast(Start, Vector2.down, Ydistance, m_groundLayer);
+            Debug.DrawRay(Start, Vector2.down * Ydistance, Color.red);
+
+            return hit.collider != null;
+        }
+
 
         private void OnCollisionEnter2D(Collision2D collision)
         {

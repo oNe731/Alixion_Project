@@ -12,6 +12,7 @@ namespace Madness
         [SerializeField] private Button       m_interactButton;
         [SerializeField] private GameObject   m_blakchole;
         [SerializeField] private GameObject[] m_heart;
+        [SerializeField] private EnemyController[] m_enemy;
 
         private float m_interactionRange = 2f; // 근접 상호작용 범위
         private float m_fallY = -10f;
@@ -47,8 +48,6 @@ namespace Madness
             transform.position = position;
         }
 
-
-
         public void TakeDamage(int damage)
         {
             m_currentHealth -= damage;
@@ -82,8 +81,12 @@ namespace Madness
             {
                 m_blakchole.GetComponent<AudioSource>().Play();
 
+                transform.GetChild(0).gameObject.SetActive(false);
                 m_manager.Score += m_stealscore * 5;
                 m_stealscore = 0;
+
+                for (int i = 0; i < m_enemy.Length; ++i)
+                    m_enemy[i].Stop_Chase();
             }
         }
 
@@ -97,6 +100,7 @@ namespace Madness
                     EnemyController enemy = collider.gameObject.GetComponent<EnemyController>();
                     if (enemy != null)
                     {
+                        transform.GetChild(0).gameObject.SetActive(true);
                         enemy.Steal_Item();
                         break;
                     }

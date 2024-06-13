@@ -61,9 +61,15 @@ namespace Madness
             float horizontalInput = 0f;
 
             if (m_isMovingLeft)
+            {
                 horizontalInput = -1f;
+                transform.GetChild(0).gameObject.transform.localPosition = new Vector3(-0.3f, transform.GetChild(0).gameObject.transform.localPosition.y, transform.GetChild(0).gameObject.transform.localPosition.z);
+            }
             else if (m_isMovingRight)
+            {
                 horizontalInput = 1f;
+                transform.GetChild(0).gameObject.transform.localPosition = new Vector3(0.3f, transform.GetChild(0).gameObject.transform.localPosition.y, transform.GetChild(0).gameObject.transform.localPosition.z);
+            }
 
             m_rigidbody.velocity = new Vector2(horizontalInput * m_moveSpeed, m_rigidbody.velocity.y);
         }

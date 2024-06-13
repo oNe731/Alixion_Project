@@ -91,6 +91,9 @@ public class IntroManager : MonoBehaviour
     {
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
+            if (Input.GetTouch(0).position.y > (Screen.height * 5 / 6))
+                return;
+
             if (m_typingCoroutine != null)
             {
                 StopCoroutine(m_typingCoroutine);
@@ -118,6 +121,9 @@ public class IntroManager : MonoBehaviour
     {
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
+            if (Input.GetTouch(0).position.y > (Screen.height * 5 / 6))
+                return;
+
             if (m_typingCoroutine != null)
             {
                 StopCoroutine(m_typingCoroutine);
@@ -171,6 +177,22 @@ public class IntroManager : MonoBehaviour
         if (m_letters.Length > 0)
         {
             StartTyping(m_letters[m_currentDialogIndex]);
+        }
+    }
+
+    public void Skip_Button()
+    {
+        if(m_state == STATE.ST_INTRO)
+        {
+            m_state = STATE.ST_LETTER_CREATE;
+            if (m_typingCoroutine != null)
+                StopCoroutine(m_typingCoroutine);
+            m_text.text = "";
+            Instantiate(Resources.Load<GameObject>("Prefabs/Intro/Button_Letter"), GameObject.Find("Canvas").transform);
+        }
+        else
+        {
+            Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => SceneManager.LoadScene("MainGame"), 0f, false);
         }
     }
 }

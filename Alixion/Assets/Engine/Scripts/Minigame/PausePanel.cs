@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class PausePanel : MonoBehaviour
 {
-    private void Update()
+    public void Button_Resume()
     {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                gameObject.SetActive(false);
-                GameManager.Instance.False_Pause();
-            }
-        }
+        gameObject.SetActive(false);
+        GameManager.Instance.False_Pause();
+    }
+
+    public void Button_Retry()
+    {
+        gameObject.SetActive(false);
+        GameManager.Instance.False_Pause();
+
+        GameManager.Instance.Retry_Scene();
+    }
+
+    public void Button_MainScene()
+    {
+        gameObject.SetActive(false);
+        GameManager.Instance.False_Pause();
+
+        GameManager.Instance.Go_Home();
+    }
+
+    public void Button_Setting()
+    {
+        gameObject.SetActive(false);
+        //GameManager.Instance.False_Pause();
+        GameManager.Instance.Open_Settings();
     }
 }

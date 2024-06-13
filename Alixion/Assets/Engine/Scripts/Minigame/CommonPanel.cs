@@ -11,11 +11,15 @@ public class CommonPanel : MonoBehaviour
     {
         GameManager.Instance.Pause = true;
         m_methodPanel.SetActive(true);
+
+        Camera.main.GetComponent<AudioListener>().enabled = false;
     }
 
     public void Button_SettingPanel()
     {
         GameManager.Instance.Pause = true;
         m_settingPanel.SetActive(true);
+
+        Camera.main.GetComponent<AudioListener>().enabled = false;
     }
 }

@@ -83,11 +83,11 @@ namespace Zen
             {
                 m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_CLEAR);
                 if (m_score >= m_maxScore)
-                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Seclusion1", "UI_Item_Seclusion2", "UI_Item_Seclusion3");
+                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Zen1", "UI_Item_Zen2", "UI_Item_Zen3");
                 else if (m_score >= m_midScore)
-                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Seclusion1", "UI_Item_Seclusion2");
+                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Zen1", "UI_Item_Zen2");
                 else if (m_score >= m_minScore)
-                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Seclusion1");
+                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Zen1");
             }
             else
                 m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_FAIL);

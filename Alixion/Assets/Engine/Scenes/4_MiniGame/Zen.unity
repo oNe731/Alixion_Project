@@ -214,6 +214,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 682378403}
     m_Modifications:
+    - target: {fileID: 2291557003432361059, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291557003432361059, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0ee5a1bc7335a9049a5e0f78d62a5b3d, type: 3}
+    - target: {fileID: 2291557003432361059, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291557003432361059, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291557003432361059, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2291557003432361059, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2902162000274459960, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6978889870159695079, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
       propertyPath: m_Name
       value: Panel_Common

@@ -218,11 +218,11 @@ public class RuinManager : LevelManager
             m_finishPanel.SetActive(true);
             m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_CLEAR);
             if (m_places[0] == "Player")
-                m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Seclusion1", "UI_Item_Seclusion2", "UI_Item_Seclusion3");
+                m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Ruin1", "UI_Item_Ruin2", "UI_Item_Ruin3");
             else if (m_places[1] == "Player")
-                m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Seclusion1", "UI_Item_Seclusion2");
+                m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Ruin1", "UI_Item_Ruin2");
             else if (m_places[2] == "Player")
-                m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Seclusion1");
+                m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Ruin1");
         }
     }
 

@@ -15,6 +15,25 @@ public enum ALIENTYPE // 15°³
 
     AT_END
 };
+
+public class ProfileData
+{
+    private string m_like;
+    private string m_hate;
+    private string m_state;
+
+    public string Like => m_like;
+    public string Hate => m_hate;
+    public string State => m_state;
+
+    public ProfileData(string like, string hate, string state)
+    {
+        m_like = like;
+        m_hate = hate;
+        m_state = state;
+    }
+}
+
 public class AlienData
 {
     private ALIENTYPE m_type;
@@ -24,6 +43,9 @@ public class AlienData
     private string m_endingDialog;
     private string m_endingCardIamge;
 
+    private ProfileData m_profileData;
+    private List<List<string>> m_dialogs;
+
     public ALIENTYPE Type => m_type;
     public string[] AnimatrNames => m_animatrNames;
 
@@ -31,7 +53,15 @@ public class AlienData
     public string EndingDialog => m_endingDialog;
     public string EndingCardIamge => m_endingCardIamge;
 
-    public AlienData(ALIENTYPE type, string animatrNames1, string animatrNames2, string animatrNames3, string endingName, string endingDialog, string endingCardIamge)
+    public ProfileData ProfileInfo => m_profileData;
+    public List<List<string>> Dialogs => m_dialogs;
+
+
+    public AlienData(
+        ALIENTYPE type, 
+        string animatrNames1, string animatrNames2, string animatrNames3, 
+        string endingName, string endingDialog, string endingCardIamge, 
+        ProfileData profileData, List<List<string>> dialogs)
     {
         m_type = type;
         m_animatrNames = new string[3];
@@ -42,5 +72,17 @@ public class AlienData
         m_endingName      = endingName;
         m_endingDialog    = endingDialog;
         m_endingCardIamge = endingCardIamge;
+
+        m_profileData = profileData;
+
+        m_dialogs = new List<List<string>>();
+        for (int i = 0; i < dialogs.Count; ++i)
+        {
+            m_dialogs.Add(new List<string>());
+            for (int j = 0; j < dialogs[i].Count; ++j)
+            {
+                m_dialogs[i].Add(dialogs[i][j]);
+            }
+        }
     }
 }

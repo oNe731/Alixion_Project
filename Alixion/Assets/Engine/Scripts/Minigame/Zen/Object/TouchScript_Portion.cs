@@ -6,7 +6,7 @@ namespace Zen
 
     public class TouchScript_Portion : MonoBehaviour
     {
-        [SerializeField] private float m_timeValue = 5f;
+        private float m_timeValue = -5f;
         private ZenManager m_zenManager;
 
         private void Start()

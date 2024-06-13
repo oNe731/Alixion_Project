@@ -68,11 +68,11 @@ namespace Fraud
             {
                 m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_CLEAR);
                 if (m_score >= m_scoreToChange3Scene)
-                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Seclusion1", "UI_Item_Seclusion2", "UI_Item_Seclusion3");
+                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(3, "UI_Item_Fraud1", "UI_Item_Fraud2", "UI_Item_Fraud3");
                 else if (m_score >= m_scoreToChange2Scene)
-                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Seclusion1", "UI_Item_Seclusion2");
+                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(2, "UI_Item_Fraud1", "UI_Item_Fraud2");
                 else if (m_score >= m_scoreToChange1Scene)
-                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Seclusion1");
+                    m_finishPanel.GetComponent<FinishPanel>().Create_Item(1, "UI_Item_Fraud1");
             }
             else
                 m_finishPanel.GetComponent<FinishPanel>().Finish_Game(FinishPanel.FinishType.FT_FAIL);

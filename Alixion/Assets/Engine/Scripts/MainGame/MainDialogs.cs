@@ -5,8 +5,9 @@ using TMPro;
 
 public class MainDialogs : MonoBehaviour
 {
-    [SerializeField] private GameObject m_Panel;
-    [SerializeField] private TMP_Text m_text;
+    [SerializeField] private GameObject m_introPanel;
+    [SerializeField] private GameObject m_namePanel;
+    [SerializeField] private TMP_Text   m_text;
 
     private string[] m_dialogs;
     private int m_currentDialogIndex = 0;
@@ -33,11 +34,14 @@ public class MainDialogs : MonoBehaviour
 
     private void Update()
     {
-        if (m_Panel == null)
+        if (m_introPanel == null)
             return;
 
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
+            if (Input.GetTouch(0).position.y > (Screen.height * 5 / 6))
+                return;
+
             if (m_typingCoroutine != null)
             {
                 StopCoroutine(m_typingCoroutine);
@@ -53,10 +57,12 @@ public class MainDialogs : MonoBehaviour
                 }
                 else
                 {
-                    Camera.main.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/BGM/MainBGM");
-                    Camera.main.GetComponent<AudioSource>().Play();
+                    //Camera.main.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/BGM/MainBGM");
+                    //Camera.main.GetComponent<AudioSource>().Play();
 
-                    Destroy(m_Panel);
+                    //Destroy(m_introPanel);
+                    Destroy(m_introPanel);
+                    m_namePanel.SetActive(true);
                 }
             }
         }
@@ -64,12 +70,12 @@ public class MainDialogs : MonoBehaviour
 
     public void Start_Dialogs()
     {
-        if (m_Panel == null)
+        if (m_introPanel == null)
             return;
 
         if (m_dialogs.Length > 0)
         {
-            m_Panel.SetActive(true);
+            m_introPanel.SetActive(true);
             StartTyping(m_dialogs[m_currentDialogIndex]);
         }
     }
@@ -88,5 +94,14 @@ public class MainDialogs : MonoBehaviour
             yield return new WaitForSeconds(m_typingSpeed);
         }
         m_typingCoroutine = null;
+    }
+
+    public void Skip_Button()
+    {
+        //Camera.main.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/BGM/MainBGM");
+        //Camera.main.GetComponent<AudioSource>().Play();
+
+        Destroy(m_introPanel);
+        m_namePanel.SetActive(true);
     }
 }

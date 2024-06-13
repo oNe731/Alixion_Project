@@ -50,13 +50,13 @@ public class FinishPanel : MonoBehaviour
     {
         GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
         GetComponent<AudioSource>().Play();
-        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.Portrait, "MainGame")), 0f, false);
+        GameManager.Instance.Go_Home();
     }
 
     public void Button_Retry()
     {
         GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
         GetComponent<AudioSource>().Play();
-        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, SceneManager.GetActiveScene().name)), 0f, false); // 해당 씬 재시작
+        GameManager.Instance.Retry_Scene();
     }
 }

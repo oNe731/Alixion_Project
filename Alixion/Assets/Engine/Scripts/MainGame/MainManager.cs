@@ -7,6 +7,9 @@ public class MainManager : MonoBehaviour
 {
     [SerializeField] private GameObject m_panelMiniGame;
 
+    [SerializeField] private GameObject m_tutorialPanel;
+    [SerializeField] private GameObject m_nameInputPanel;
+
     private void Start()
     {
         GameManager.Instance.gameObject.GetComponent<Setting>().Update_AllAudioSources();
@@ -20,11 +23,16 @@ public class MainManager : MonoBehaviour
             // 튜토리얼 재생
             GameManager.Instance.Tutorial = true;
             GetComponent<MainDialogs>().Start_Dialogs();
+
+            GameManager.Instance.ActivePanel = true;
         }
         else
         {
             Camera.main.GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/BGM/MainBGM");
             Camera.main.GetComponent<AudioSource>().Play();
+
+            Destroy(m_tutorialPanel);
+            Destroy(m_nameInputPanel);
         }
     }
 

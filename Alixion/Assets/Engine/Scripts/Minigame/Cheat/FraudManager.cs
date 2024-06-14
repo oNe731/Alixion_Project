@@ -29,7 +29,7 @@ namespace Fraud
             Main.UIManager.Instance.Start_FadeIn(0.5f, Color.black);
 
             m_audioSource = GetComponent<AudioSource>();
-            m_scoreText.text = "Score: " + m_score;
+            m_scoreText.text = "점수 : " + m_score;
         }
 
         public override void Start_Game()
@@ -47,7 +47,7 @@ namespace Fraud
                 return;
 
             m_currentTime -= Time.deltaTime;
-            m_timeText.text = "Time: " + m_currentTime.ToString("F0");
+            m_timeText.text = "시간 : " + m_currentTime.ToString("F0");
 
             if (m_currentTime > 0)
             {
@@ -81,7 +81,7 @@ namespace Fraud
         public void AddScore(int amount)
         {
             m_score += amount;
-            m_scoreText.text = "Score: " + m_score;
+            m_scoreText.text = "점수 : " + m_score;
         }
 
         public void Play_Sound(string path)

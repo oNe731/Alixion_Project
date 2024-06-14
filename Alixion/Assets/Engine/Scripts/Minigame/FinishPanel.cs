@@ -26,21 +26,21 @@ public class FinishPanel : MonoBehaviour
             transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
             GameObject UIitem1 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/" + Name1), transform);
             UIitem1.GetComponent<RectTransform>().anchoredPosition = new Vector2(-153f, -45.5f);
-            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>().objectName);
+            GameManager.Instance.Inventory.Add_Item(UIitem1.GetComponent<ItemData>());
 
             if (Count > 1)
             {
                 transform.GetChild(0).GetChild(2).gameObject.SetActive(true);
                 GameObject UIitem2 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/" + Name2), transform);
                 UIitem2.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.6f, -45.5f);
-                GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>().objectName);
+                GameManager.Instance.Inventory.Add_Item(UIitem2.GetComponent<ItemData>());
 
                 if (Count > 2)
                 {
                     transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
                     GameObject UIitem3 = Instantiate(Resources.Load<GameObject>("Prefabs/MainGame/Inventory/Item/" + Name3), transform);
                     UIitem3.GetComponent<RectTransform>().anchoredPosition = new Vector2(153f, -45.5f);
-                    GameManager.Instance.Inventory.Add_Item(UIitem3.GetComponent<ItemData>().objectName);
+                    GameManager.Instance.Inventory.Add_Item(UIitem3.GetComponent<ItemData>());
                 }
             }
         }

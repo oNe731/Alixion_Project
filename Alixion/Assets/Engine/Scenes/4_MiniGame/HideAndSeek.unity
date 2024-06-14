@@ -10326,8 +10326,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00:00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a666185589843df48bfcb780cedc44ba, type: 2}
+  m_sharedMaterial: {fileID: -1747380984669114612, guid: a666185589843df48bfcb780cedc44ba, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -18122,6 +18122,10 @@ PrefabInstance:
     - target: {fileID: 6978889870159695079, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
       propertyPath: m_Name
       value: Panel_Common
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978889870159695079, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8497657383110026711, guid: 55c85d8fd0a114b4b9879cdd41068b16, type: 3}
       propertyPath: m_Pivot.x

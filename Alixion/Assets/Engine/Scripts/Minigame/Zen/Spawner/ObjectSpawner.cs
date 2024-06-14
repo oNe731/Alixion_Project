@@ -27,7 +27,7 @@ namespace Zen
                 while (m_spawnedPositions.Contains(randomPosition))
                     randomPosition = Get_RandomPosition();
 
-                Instantiate(prefabs[Random.Range(0, prefabs.Count)], randomPosition, Quaternion.identity);
+                Instantiate(prefabs[Random.Range(0, prefabs.Count)], randomPosition, Quaternion.Euler(0f, 0f, Random.Range(-45f, 45f)));
                 m_spawnedPositions.Add(randomPosition);
             }
         }

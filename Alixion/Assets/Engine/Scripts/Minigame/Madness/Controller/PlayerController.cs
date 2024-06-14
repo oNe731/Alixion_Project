@@ -11,7 +11,8 @@ namespace Madness
 
         [SerializeField] private Button       m_interactButton;
         [SerializeField] private GameObject   m_blakchole;
-        [SerializeField] private GameObject[] m_heart;
+        [SerializeField] private Image[] m_heart;
+        [SerializeField] private Sprite[] m_heartImage;
         [SerializeField] private EnemyController[] m_enemy;
 
         private float m_interactionRange = 2f; // 근접 상호작용 범위
@@ -51,28 +52,12 @@ namespace Madness
         public void TakeDamage(int damage)
         {
             m_currentHealth -= damage;
-            if (m_currentHealth <= 0)
-            {
+            if (m_currentHealth < 0)
                 m_currentHealth = 0;
-                // 플레이어가 죽었을 때 처리
-                Debug.Log("Player is Dead!");
-                Destroy(gameObject);
-            }
-            if (m_currentHealth == 2)
-            {
-                Destroy(m_heart[2]);
-            }
-            else if (m_currentHealth == 1)
-            {
-                Destroy(m_heart[1]);
-            }
-            else if (m_currentHealth == 0)
-            {
-                Destroy(m_heart[0]);
-                m_manager.Over_Game();
-            }
 
-            Debug.Log("Player Health: " + m_currentHealth);
+            m_heart[m_currentHealth].sprite = m_heartImage[0];
+            if (m_currentHealth <= 0)
+                m_manager.Over_Game();
         }
 
         void OnCollisionEnter2D(Collision2D collision)

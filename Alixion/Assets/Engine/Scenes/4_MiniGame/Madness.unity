@@ -736,8 +736,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 199103896}
   - {fileID: 593871354}
+  - {fileID: 199103896}
   - {fileID: 714703084}
   - {fileID: 1555225349}
   - {fileID: 1903773742}
@@ -787,7 +787,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 35.829956, y: -39.069824}
+  m_AnchoredPosition: {x: 41, y: -164}
   m_SizeDelta: {x: 2328, y: 1086}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &199103897
@@ -1614,9 +1614,12 @@ MonoBehaviour:
   m_interactButton: {fileID: 261349465}
   m_blakchole: {fileID: 853940515}
   m_heart:
-  - {fileID: 330270077}
-  - {fileID: 799478617}
-  - {fileID: 772132556}
+  - {fileID: 330270079}
+  - {fileID: 799478619}
+  - {fileID: 772132558}
+  m_heartImage:
+  - {fileID: 21300000, guid: 5380a4bb81e85fa4c93bc33834099cf2, type: 3}
+  - {fileID: 21300000, guid: 452113938812ca84b90b4f20da3df4d2, type: 3}
   m_enemy:
   - {fileID: 1665206132}
   - {fileID: 1589582359}
@@ -1943,11 +1946,11 @@ RectTransform:
   - {fileID: 1738612224}
   m_Father: {fileID: 159822300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -201.13, y: 468}
-  m_SizeDelta: {x: 579.8462, y: 73.2891}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 33, y: -35}
+  m_SizeDelta: {x: 579.8462, y: 73.28912}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &593871355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2186,11 +2189,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 159822300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 441.5, y: 471.4}
-  m_SizeDelta: {x: 231.7, y: 35.3814}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 44, y: -279}
+  m_SizeDelta: {x: 773.4, y: 50.47998}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &714703085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2211,7 +2214,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC810\uC218:"
+  m_text: "\uC810\uC218:0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a666185589843df48bfcb780cedc44ba, type: 2}
   m_sharedMaterial: {fileID: -1747380984669114612, guid: a666185589843df48bfcb780cedc44ba, type: 2}
@@ -2220,8 +2223,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 3875536895
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.9019608}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2238,15 +2241,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -5677,7 +5680,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6.857143
+  orthographic size: 34.31111
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

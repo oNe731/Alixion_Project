@@ -27,18 +27,19 @@ public class StartPanel : MonoBehaviour
 
     private void Update()
     {
-        if (!m_start && Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                m_start = true;
-                transform.GetChild(0).gameObject.SetActive(true);
-                m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Ready");
-                m_txtTransform.localScale = m_initialScale * 0.1f;
-            }
-        }
-        else if (m_start)
+        //if (!m_start && Input.touchCount > 0)
+        //{
+        //    Touch touch = Input.GetTouch(0);
+        //    if (touch.phase == TouchPhase.Began)
+        //    {
+        //        m_start = true;
+        //        transform.GetChild(0).gameObject.SetActive(true);
+        //        m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Ready");
+        //        m_txtTransform.localScale = m_initialScale * 0.1f;
+        //    }
+        //}
+        //else
+        if (m_start)
         {
             m_txtTransform.localScale += Vector3.one * 0.07f;
             if (m_txtTransform.localScale.x > m_maxScale)
@@ -67,5 +68,13 @@ public class StartPanel : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Start_Ready()
+    {
+        m_start = true;
+        transform.GetChild(0).gameObject.SetActive(true);
+        m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Ready");
+        m_txtTransform.localScale = m_initialScale * 0.1f;
     }
 }

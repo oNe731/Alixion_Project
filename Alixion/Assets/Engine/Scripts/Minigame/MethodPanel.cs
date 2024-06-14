@@ -18,7 +18,10 @@ public class MethodPanel : MonoBehaviour
                 if (GameManager.Instance.IsMiniGame == false)
                 {
                     if(m_startPanel.activeSelf == false)
+                    {
                         m_startPanel.SetActive(true);
+                        m_startPanel.GetComponent<StartPanel>().Start_Ready();
+                    }
                 }
                 else
                     GameManager.Instance.False_Pause();

@@ -30,7 +30,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void Add_Item(string itemName)
+    public void Add_Item(ItemData itemData)
     {
         // 중복 아이템 검사
         bool sameItem = false;
@@ -38,8 +38,9 @@ public class Inventory : MonoBehaviour
         {
             if (m_slots[i].EMPTY == false)
             {
-                if(m_slots[i].Item.objectName == itemName)
+                if (m_slots[i].Item.objectName == itemData.objectName)
                 {
+                    m_slots[i].Add_Item(itemData.count);
                     sameItem = true;
                     break;
                 }
@@ -54,7 +55,7 @@ public class Inventory : MonoBehaviour
         {
             if (m_slots[i].EMPTY == true)
             {
-                m_slots[i].Add_Item(itemName);
+                m_slots[i].Add_Item(itemData.objectName);
                 break;
             }
         }
@@ -90,13 +91,12 @@ public class Inventory : MonoBehaviour
             return;
 
         GameManager.Instance.Add_Point(m_selctSlot.Item.propertyType, m_selctSlot.Item.point);
-        m_selctSlot.Reset_Slot();
-        Sort_Inventory();
 
+        m_selctSlot.Use_Item();
         Destroy(m_selectIcon);
     }
 
-    private void Sort_Inventory()
+    public void Sort_Inventory()
     {
         List<InvenSlot> sortedSlots = new List<InvenSlot>();
 
@@ -108,7 +108,7 @@ public class Inventory : MonoBehaviour
         // 정렬된 슬롯 리스트를 다시 설정
         for (int i = 0; i < m_slotCount; i++)
         {
-            if (sortedSlots[i] != null && sortedSlots[i].EMPTY == false) { m_slots[i].Add_Item(sortedSlots[i].Item.objectName); }
+            if (sortedSlots[i] != null && sortedSlots[i].EMPTY == false) { m_slots[i].Add_Item(sortedSlots[i].Item.objectName, sortedSlots[i].Item.count); }
             else { m_slots[i].Reset_Slot(); }
         }
     }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class RuinManager : LevelManager
 {
-    public enum TYPE { TYPE_PLAYER, TYPE_AI1, TYPE_AI2, TYPE_END }
+    public enum TYPE { TYPE_AI1, TYPE_PLAYER, TYPE_AI2, TYPE_END }
 
     [SerializeField] private int m_initialBlockCount = 50;
     [SerializeField] private List<GameObject> m_blockPrefabs;
@@ -90,16 +90,21 @@ public class RuinManager : LevelManager
     {
         while (blockList.Count > 0)
         {
-            if (GameManager.Instance.IsMiniGame == false || GameManager.Instance.Pause == true)
+            if (GameManager.Instance.IsMiniGame == false)
                 break;
 
-            yield return new WaitForSeconds(Random.Range(0.2f, 0.5f));
+            if (GameManager.Instance.Pause == false)
+            {
+                yield return new WaitForSeconds(Random.Range(0.2f, 0.5f));
 
-            Block topBlock = Get_TopBlock(blockList);
-            if (topBlock != null)
-                topBlock.Decrease_Health(type);
-            else
-                break;
+                Block topBlock = Get_TopBlock(blockList);
+                if (topBlock != null)
+                    topBlock.Decrease_Health(type);
+                else
+                    break;
+            }
+
+            yield return null;
         }
     }
 

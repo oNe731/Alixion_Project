@@ -169,7 +169,7 @@ public class IntroManager : MonoBehaviour
         m_state = STATE.ST_LETTER_OPEN;
 
         m_letter.SetActive(true);
-        m_text.color = Color.black;
+        m_text.color = new Color32(150, 96, 54, 255);
 
         m_currentDialogIndex = 0;
         m_typingCoroutine = null;

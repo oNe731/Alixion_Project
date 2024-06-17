@@ -106,7 +106,7 @@ public class MainManager : MonoBehaviour
     {
         GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
         GetComponent<AudioSource>().Play();
-        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Zen")), 0f, false); // 가로
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeLeft, "Zen")), 0f, false); // 가로
     }
 
     public void Load_FraudScene()
@@ -120,14 +120,14 @@ public class MainManager : MonoBehaviour
     {
         GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
         GetComponent<AudioSource>().Play();
-        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "HideAndSeek")), 0f, false); // 가로
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeLeft, "HideAndSeek")), 0f, false); // 가로
     }
 
     public void Load_MadnessScene()
     {
         GetComponent<AudioSource>().clip = Resources.Load<AudioClip>("Sonds/Effect/MainGame/UI_Click");
         GetComponent<AudioSource>().Play();
-        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeRight, "Madness")), 0f, false); // 가로
+        Main.UIManager.Instance.Start_FadeOut(0.5f, Color.black, () => StartCoroutine(GameManager.Instance.Wait_LodeScene(ScreenOrientation.LandscapeLeft, "Madness")), 0f, false); // 가로
     }
     #endregion
 }

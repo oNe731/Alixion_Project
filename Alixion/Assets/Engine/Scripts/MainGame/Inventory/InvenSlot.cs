@@ -71,6 +71,6 @@ public class InvenSlot : MonoBehaviour
     public void Click_Slot()
     {
         inventory.Selct_Slot(this);
-        //GameManager.Instance.Open_InventoryItem(m_item);
+        GameManager.Instance.Open_InventoryItem(m_item);
     }
 }

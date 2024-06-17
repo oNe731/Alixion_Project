@@ -11,7 +11,7 @@ namespace Fraud
 
         private List<Bounds> m_blockBoundsList = new List<Bounds>();
 
-        public void Spawn_Blocks(int BlockCount = 5)
+        public void Spawn_Blocks(int BlockCount)
         {
             m_blockBoundsList.Clear();
 

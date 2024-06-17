@@ -62,7 +62,7 @@ public class HideAndSeekManager : LevelManager
         else
             Destroy(this.gameObject);
 
-        Screen.orientation = ScreenOrientation.LandscapeRight;
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
         Main.UIManager.Instance.Start_FadeIn(0.5f, Color.black);
 
         m_player = GameObject.FindGameObjectWithTag("Player");

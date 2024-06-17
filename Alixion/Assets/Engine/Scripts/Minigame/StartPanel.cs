@@ -15,14 +15,17 @@ public class StartPanel : MonoBehaviour
     private bool  m_start = false;
     private float m_wait  = 0f;
 
-    private float   m_maxScale = 4f;
-    private Vector3 m_initialScale;
+    private float m_maxScale = 10f;
+    private float m_initialScale = 5f;
+
+    private AudioSource m_audioSource;
 
     private void Awake()
     {
         m_txtImage     = transform.GetChild(0).GetComponent<Image>();
         m_txtTransform = m_txtImage.GetComponent<RectTransform>();
-        m_initialScale = m_txtTransform.localScale;
+
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -41,27 +44,27 @@ public class StartPanel : MonoBehaviour
         //else
         if (m_start)
         {
-            m_txtTransform.localScale += Vector3.one * 0.07f;
+            m_txtTransform.localScale += Vector3.one * 0.08f;
             if (m_txtTransform.localScale.x > m_maxScale)
             {
                 m_txtTransform.localScale = Vector3.one * m_maxScale;
                 if (m_txtImage.sprite.name != "Start")
                 {
                     m_wait += Time.deltaTime;
-                    if (m_wait > 0.2f)
+                    if (m_wait > 0.4f)
                     {
                         m_wait = 0f;
                         m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Start");
-                        m_txtTransform.localScale = m_initialScale * 0.1f;
+                        m_txtTransform.localScale = new Vector3(m_initialScale, m_initialScale, m_initialScale);
+
+                        m_audioSource.clip = Resources.Load<AudioClip>("Sonds/Effect/MiniGame/Common/Start");
+                        m_audioSource.Play();
                     }
                 }
                 else
                 {
-                    m_wait += Time.deltaTime;
-                    if (m_wait > 0.2f)
+                    if (m_audioSource.isPlaying == false)
                     {
-                        m_wait = 0f;
-
                         m_levelManager.Start_Game();
                         Destroy(gameObject);
                     }
@@ -75,6 +78,9 @@ public class StartPanel : MonoBehaviour
         m_start = true;
         transform.GetChild(0).gameObject.SetActive(true);
         m_txtImage.sprite = Resources.Load<Sprite>("Sprites/Minigame/Common/UI/FontUI/Ready");
-        m_txtTransform.localScale = m_initialScale * 0.1f;
+        m_txtTransform.localScale = new Vector3(m_initialScale, m_initialScale, m_initialScale);
+
+        m_audioSource.clip = Resources.Load<AudioClip>("Sonds/Effect/MiniGame/Common/Ready");
+        m_audioSource.Play();
     }
 }

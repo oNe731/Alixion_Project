@@ -36,7 +36,7 @@ namespace Fraud
         {
             m_currentTime = m_timeLimit;
 
-            GetComponent<BlockSpawner>().Spawn_Blocks(20);
+            GetComponent<BlockSpawner>().Spawn_Blocks(m_scoreToChange3Scene);
             Camera.main.gameObject.GetComponent<AudioSource>().Play();
             GameManager.Instance.IsMiniGame = true;
         }
@@ -51,9 +51,9 @@ namespace Fraud
 
             if (m_currentTime > 0)
             {
-                GameObject[] objectsWithTag = GameObject.FindGameObjectsWithTag("Block");
-                if (objectsWithTag.Length == 0)
-                    GetComponent<BlockSpawner>().Spawn_Blocks(10);
+                //GameObject[] objectsWithTag = GameObject.FindGameObjectsWithTag("Block");
+                //if (objectsWithTag.Length == 0)
+                //    GetComponent<BlockSpawner>().Spawn_Blocks(10);
             }
             else
                 Over_Game();

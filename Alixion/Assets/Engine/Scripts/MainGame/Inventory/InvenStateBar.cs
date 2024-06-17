@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class InvenStateBar : MonoBehaviour
 {
     private ALIENTYPE m_currentAlienType = ALIENTYPE.AT_END;
+    private int m_currentLevel = 0;
 
     private Slider m_inventorySlider;
     private Image m_inventorySliderFill;
@@ -19,9 +20,10 @@ public class InvenStateBar : MonoBehaviour
     private void Update()
     {
         m_inventorySlider.value = GameManager.Instance.SumPoint;
-        if (m_currentAlienType != GameManager.Instance.CurrentAlienType)
+        if (m_currentAlienType != GameManager.Instance.CurrentAlienType || m_currentLevel != GameManager.Instance.CurrentLevel)
         {
             m_currentAlienType = GameManager.Instance.CurrentAlienType;
+            m_currentLevel = GameManager.Instance.CurrentLevel;
             switch (m_currentAlienType)
             {
                 case ALIENTYPE.AT_BASIC:

@@ -19,7 +19,7 @@ public class ProfileMini : MonoBehaviour
 
     private void Update()
     {
-        if (m_currentLevel != GameManager.Instance.CurrentLevel)
+        if (m_currentAlienType != GameManager.Instance.CurrentAlienType || m_currentLevel != GameManager.Instance.CurrentLevel)
         {
             m_currentAlienType = GameManager.Instance.CurrentAlienType;
             m_currentLevel = GameManager.Instance.CurrentLevel;
